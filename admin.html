@@ -5,16 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>لوحة تحكم 4T CHICKEN</title>
   <style>
-    body { font-family: "Tajawal", sans-serif; background: #10110f; color: #f7f5ee; padding: 20px; }
-    .container { max-width: 600px; margin: auto; background: #191b17; padding: 20px; border-radius: 10px; border: 1px solid #30332a; }
-    h1, h2 { text-align: center; color: #ffc431; }
-    input, select, button { width: 100%; padding: 10px; margin: 8px 0; border-radius: 6px; border: 1px solid #30332a; background: #22241e; color: white; font-family: inherit; }
-    button { background: #ffc431; color: #10110f; font-weight: bold; cursor: pointer; border: none; margin-top: 15px;}
+    body { font-family: "Tajawal", sans-serif; background: #10110f; color: #f7f5ee; padding: 20px; margin: 0; }
+    .container { max-width: 700px; margin: auto; background: #191b17; padding: 25px; border-radius: 12px; border: 1px solid #30332a; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    h1, h2 { text-align: center; color: #ffc431; margin-bottom: 20px; }
+    .form-group { margin-bottom: 15px; }
+    label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; color: #d7d8c9; }
+    input, select, button { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #3b4431; background: #22241e; color: white; font-family: inherit; font-size: 15px; box-sizing: border-box; }
+    input:focus, select:focus { border-color: #ffc431; outline: none; }
+    button { background: #ffc431; color: #10110f; font-weight: bold; cursor: pointer; border: none; margin-top: 10px; font-size: 16px; transition: 0.2s; }
     button:hover { background: #ffd263; }
+    button:disabled { background: #555; color: #888; cursor: not-allowed; }
+    .btn-danger { background: #ee4636; color: white; }
+    .btn-danger:hover { background: #ff7561; }
     .hidden { display: none; }
-    .product-item { display: flex; justify-content: space-between; align-items: center; background: #22241e; padding: 10px; margin-bottom: 8px; border-radius: 6px; }
-    .delete-btn { background: #ee4636; color: white; width: auto; padding: 5px 10px; margin: 0; }
-    .logout-btn { background: transparent; border: 1px solid #ee4636; color: #ee4636; width: auto; margin-bottom: 20px;}
+    .product-item { display: flex; justify-content: space-between; align-items: center; background: #22241e; padding: 12px; margin-bottom: 10px; border-radius: 8px; border-right: 4px solid #ffc431; }
+    .product-info h4 { margin: 0 0 5px 0; font-size: 16px; }
+    .product-info p { margin: 0; font-size: 13px; color: #a3a59a; }
+    .logout-btn { background: transparent; border: 1px solid #ee4636; color: #ee4636; width: auto; margin-bottom: 20px; padding: 8px 20px; }
+    .box { background: #10150d; padding: 20px; border-radius: 10px; border: 1px solid #303925; margin-bottom: 25px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
+    #msg { text-align: center; font-weight: bold; margin-top: 15px; font-size: 16px; }
   </style>
 </head>
 <body>
@@ -23,27 +34,66 @@
     <!-- شاشة تسجيل الدخول -->
     <div id="loginSection">
       <h1>تسجيل دخول الأدمن</h1>
-      <input type="email" id="email" placeholder="البريد الإلكتروني">
-      <input type="password" id="password" placeholder="كلمة المرور">
+      <div class="form-group">
+        <label>البريد الإلكتروني</label>
+        <input type="email" id="email" placeholder="admin@example.com">
+      </div>
+      <div class="form-group">
+        <label>كلمة المرور</label>
+        <input type="password" id="password" placeholder="********">
+      </div>
       <button onclick="login()">دخول</button>
-      <p id="loginError" style="color: #ee4636; text-align: center;"></p>
+      <p id="loginError" style="color: #ee4636; text-align: center; margin-top: 10px;"></p>
     </div>
 
     <!-- شاشة لوحة التحكم -->
     <div id="adminSection" class="hidden">
       <button class="logout-btn" onclick="logout()">تسجيل خروج</button>
-      <h1>إضافة منتج جديد</h1>
+      <h1>لوحة تحكم 4T CHICKEN</h1>
       
-      <input type="text" id="prodName" placeholder="اسم الوجبة (مثال: برجر دجاج)">
-      <input type="number" id="prodPrice" placeholder="السعر (مثال: 5000)">
-      <input type="text" id="prodCategory" placeholder="معرف التصنيف (مثال: burgers)">
-      <input type="text" id="prodImage" placeholder="رابط الصورة (URL) - اختياري">
-      
-      <button onclick="addProduct()">إضافة المنتج للموقع</button>
-      <p id="msg" style="color: #4caf50; text-align: center; font-weight: bold;"></p>
+      <div class="box">
+        <h2>إضافة وجبة جديدة</h2>
+        <form id="addForm">
+          <div class="grid-2">
+            <div class="form-group">
+              <label>اسم الوجبة</label>
+              <input type="text" id="prodName" placeholder="مثال: بركر دجاج كلاسيك" required>
+            </div>
+            <div class="form-group">
+              <label>السعر (دينار عراقي)</label>
+              <input type="number" id="prodPrice" placeholder="مثال: 4000" required>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label>اختر القسم (التصنيف)</label>
+            <select id="prodCategory" required>
+              <option value="" disabled selected>-- اختر القسم من القائمة --</option>
+              <option value="sandwiches">السندويشات</option>
+              <option value="saj">الصاج</option>
+              <option value="burgers">البركر</option>
+              <option value="risotto">الريزو</option>
+              <option value="chicken">وجبات الكنتاكي</option>
+              <option value="family">بوكس فورتي العائلي</option>
+              <option value="snacks">الوجبات الخفيفة</option>
+              <option value="drinks">المشروبات الغازية</option>
+            </select>
+          </div>
 
-      <h2 style="margin-top: 30px;">المنتجات الحالية</h2>
-      <div id="productsList"></div>
+          <div class="form-group">
+            <label>رابط الصورة (اختياري - اتركه فارغاً لاستخدام صورة المنيو الأساسي)</label>
+            <input type="url" id="prodImage" placeholder="https://example.com/image.jpg" dir="ltr">
+          </div>
+
+          <button type="submit" id="submitBtn">إضافة الوجبة للموقع</button>
+        </form>
+        <p id="msg"></p>
+      </div>
+
+      <h2 style="margin-top: 30px;">قائمة الوجبات الحالية</h2>
+      <div id="productsList" style="max-height: 400px; overflow-y: auto;">
+        <!-- سيتم عرض الوجبات هنا -->
+      </div>
     </div>
   </div>
 
@@ -52,7 +102,7 @@
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // 🔴 ضع إعدادات Firebase الخاصة بك هنا (نفس الإعدادات التي في index.html)
+    // 🔴 ضع إعدادات Firebase الخاصة بك هنا
     const firebaseConfig = {
       apiKey: "AIzaSyBfY81QxRJak4X2h7PWjCkFPK9-9g7btDI",
       authDomain: "t-chicken.firebaseapp.com",
@@ -66,6 +116,7 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
+    // دوال الدخول والخروج
     window.login = async () => {
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
@@ -90,56 +141,90 @@
       }
     });
 
-    window.addProduct = async () => {
+    // إضافة وجبة جديدة
+    document.getElementById("addForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      
+      const btn = document.getElementById("submitBtn");
+      const msg = document.getElementById("msg");
+      
       const name = document.getElementById("prodName").value;
       const price = parseInt(document.getElementById("prodPrice").value);
       const category = document.getElementById("prodCategory").value;
-      const image = document.getElementById("prodImage").value;
+      const imageUrl = document.getElementById("prodImage").value.trim();
 
-      if (!name || !price || !category) {
-        alert("يرجى ملء الاسم والسعر والتصنيف");
-        return;
-      }
+      btn.disabled = true;
+      btn.innerText = "جاري الحفظ...";
+      msg.innerText = "";
 
       try {
-        const productData = { name, price, category, createdAt: serverTimestamp() };
-        if (image) productData.image = image;
+        const productData = { 
+          name: name, 
+          price: price, 
+          category: category, 
+          createdAt: serverTimestamp() 
+        };
+        
+        // إذا وضع رابط صورة، نضيفه. إذا تركه فارغاً، الموقع سيقص الصورة من المنيو الأساسي.
+        if (imageUrl) productData.image = imageUrl;
 
         await addDoc(collection(db, "products"), productData);
         
-        document.getElementById("msg").innerText = "تمت إضافة المنتج بنجاح!";
-        document.getElementById("prodName").value = "";
-        document.getElementById("prodPrice").value = "";
-        document.getElementById("prodImage").value = "";
+        msg.style.color = "#4caf50";
+        msg.innerText = "✅ تمت إضافة الوجبة بنجاح! ستظهر الآن في الموقع.";
         
+        // تصفير النموذج
+        document.getElementById("addForm").reset();
         loadProducts();
-        setTimeout(() => document.getElementById("msg").innerText = "", 3000);
-      } catch (error) { alert("حدث خطأ: " + error.message); }
-    };
+        
+      } catch (error) {
+        console.error(error);
+        msg.style.color = "#ee4636";
+        msg.innerText = "❌ حدث خطأ: " + error.message;
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "إضافة الوجبة للموقع";
+      }
+    });
 
+    // جلب وعرض وحذف الوجبات
     async function loadProducts() {
       const list = document.getElementById("productsList");
       list.innerHTML = "جاري التحميل...";
       try {
         const querySnapshot = await getDocs(collection(db, "products"));
         list.innerHTML = "";
-        if(querySnapshot.empty) { list.innerHTML = "<p style='text-align:center;'>لا توجد منتجات بعد.</p>"; return; }
+        if(querySnapshot.empty) { 
+          list.innerHTML = "<p style='text-align:center;'>لا توجد وجبات بعد. استخدم النموذج بالأعلى لإضافة وجبات.</p>"; 
+          return; 
+        }
         
         querySnapshot.forEach((doc) => {
           const data = doc.data();
-          list.innerHTML += `
-            <div class="product-item">
-              <div><strong>${data.name}</strong> - ${data.price} د.ع <br><small>التصنيف: ${data.category}</small></div>
-              <button class="delete-btn" onclick="deleteProduct('${doc.id}')">حذف</button>
-            </div>`;
+          const item = document.createElement("div");
+          item.className = "product-item";
+          item.innerHTML = `
+            <div class="product-info">
+              <h4>${data.name}</h4>
+              <p>السعر: ${data.price} د.ع | القسم: ${data.category}</p>
+            </div>
+            <button class="btn-danger" style="width:auto; padding:5px 15px; margin:0;" onclick="deleteProduct('${doc.id}')">حذف</button>
+          `;
+          list.appendChild(item);
         });
-      } catch (error) { list.innerHTML = "حدث خطأ في جلب المنتجات."; }
+      } catch (error) {
+        list.innerHTML = "حدث خطأ في جلب البيانات.";
+      }
     }
 
     window.deleteProduct = async (id) => {
-      if(confirm("هل أنت متأكد من حذف هذا المنتج؟")) {
-        try { await deleteDoc(doc(db, "products", id)); loadProducts(); } 
-        catch (error) { alert("خطأ في الحذف: " + error.message); }
+      if(confirm("هل أنت متأكد من حذف هذه الوجبة نهائياً؟")) {
+        try { 
+          await deleteDoc(doc(db, "products", id)); 
+          loadProducts(); 
+        } catch (error) { 
+          alert("خطأ في الحذف: " + error.message); 
+        }
       }
     };
   </script>
