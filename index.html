@@ -564,6 +564,7 @@
           <svg class="icon art-star" aria-hidden="true"><use href="#i-star"/></svg>
           <span class="art-dot" aria-hidden="true"></span>
           <div class="hero-photo" id="heroPhoto"></div>
+          
           <button class="hero-featured" id="heroAdd" aria-label="أضف بوكس فور تي العائلي إلى الطلب">
             <span>
               <span class="featured-name" id="featuredName">جاري التحميل...</span>
@@ -1384,46 +1385,6 @@
         let productsSnapshot = await getDocs(collection(db, "products"));
         products = productsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-        // 🟢 الكود السحري: إذا كانت قاعدة البيانات فارغة، سيتم رفع كل الوجبات تلقائياً
-        if (products.length === 0) {
-          console.log("قاعدة البيانات فارغة. جاري إضافة الوجبات تلقائياً...");
-          const initialMenu = [
-            { id: "shawarma-sandwich", name: "شاورما دجاج ساندويش", price: 2500, category: "sandwiches", crop: [21, 398, 116, 86] },
-            { id: "fajita-sandwich", name: "فاهيتا دجاج ساندويش", price: 4000, category: "sandwiches", crop: [142, 397, 114, 87] },
-            { id: "zinger-sandwich", name: "زنكر ساندويش", price: 4000, category: "sandwiches", crop: [265, 397, 106, 88] },
-            { id: "saj-roll", name: "لفة صاج", price: 2000, category: "saj", crop: [389, 399, 104, 87] },
-            { id: "saj-meal", name: "وجبة صاج", price: 5000, category: "saj", crop: [494, 401, 100, 84] },
-            { id: "saj-tortilla", name: "تورتيلا صاج", price: 4000, category: "saj", crop: [597, 401, 97, 84] },
-            { id: "chicken-burger", name: "بركر دجاج كلاسيك", price: 4000, category: "burgers", crop: [23, 580, 111, 96] },
-            { id: "beef-burger", name: "بركر لحم كلاسيك", price: 5000, category: "burgers", crop: [141, 580, 102, 96] },
-            { id: "double-burger", name: "بركر فور تي دبل", price: 7000, category: "burgers", crop: [256, 580, 99, 96] },
-            { id: "rizo", name: "ريزو", price: 5000, category: "risotto", crop: [372, 590, 79, 83] },
-            { id: "rizo-shawarma", name: "ريزو شاورما", price: 5500, category: "risotto", crop: [456, 593, 78, 80] },
-            { id: "rizo-spicy", name: "ريزو سبايسي", price: 5500, category: "risotto", crop: [536, 590, 79, 83] },
-            { id: "rizo-smoked", name: "ريزو مدخن", price: 5500, category: "risotto", crop: [618, 592, 75, 81] },
-            { id: "chicken-3", name: "وجبة كنتاكي 3 قطع", price: 8000, category: "chicken", crop: [30, 778, 95, 89] },
-            { id: "chicken-5", name: "وجبة كنتاكي 5 قطع", price: 12000, category: "chicken", crop: [146, 777, 99, 91] },
-            { id: "chicken-7", name: "وجبة كنتاكي 7 قطع", price: 15000, category: "chicken", crop: [263, 776, 102, 94] },
-            { id: "family-box", name: "بوكس فور تي العائلي", price: 25000, category: "family", crop: [395, 781, 219, 123] },
-            { id: "finger", name: "فدق فنكر", price: 1000, category: "snacks", crop: [35, 978, 69, 84] },
-            { id: "finger-small", name: "ماعون فنكر صغير", price: 2000, category: "snacks", crop: [136, 982, 69, 80] },
-            { id: "finger-cheese", name: "ماعون فنكر بالجبنة", price: 3000, category: "snacks", crop: [229, 976, 76, 87] },
-            { id: "finger-meat", name: "ماعون فنكر باللحم", price: 5000, category: "snacks", crop: [327, 970, 83, 93] },
-            { id: "pepsi", name: "بيبسي", price: 500, category: "drinks", crop: [452, 976, 59, 86] },
-            { id: "diet-pepsi", name: "بيبسي دايت", price: 500, category: "drinks", crop: [534, 976, 61, 86] },
-            { id: "seven-up", name: "سفن", price: 500, category: "drinks", crop: [618, 978, 59, 84] }
-          ];
-
-          for (const item of initialMenu) {
-            await setDoc(doc(db, "products", item.id), item);
-          }
-          
-          productsSnapshot = await getDocs(collection(db, "products"));
-          products = productsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-          console.log("تمت إضافة جميع الوجبات بنجاح!");
-        }
-        // -----------------------------------------------------------
-
         productMap = new Map(products.map(p => [p.id, p]));
         categoryMap = new Map(categories.map(c => [c.id, c.name]));
 
@@ -1449,17 +1410,40 @@
       if (settings.instagram) renderSocial("instagramAccount", settings.instagram, "إنستغرام");
       if (settings.tiktok) renderSocial("tiktokAccount", settings.tiktok, "تيك توك");
 
-      const featured = productMap.get("family-box");
-      if (featured) {
-        $("heroPhoto").innerHTML = featured.image
-          ? productImage(featured, 250, true)
-          : croppedImage(featured.crop, featured.name, { eager: true });
-        $("featuredName").textContent = featured.name;
-        $("featuredPrice").innerHTML = moneyMarkup(featured.price);
-        $("heroAdd").addEventListener("click", () => addToCart(featured.id, 1));
+      // 🟢 الكود الجديد الخاص بالبانر (صورة العرض)
+      if (settings.promoImage && settings.promoImage.trim() !== "") {
+        // عرض صورة العرض
+        $("heroPhoto").innerHTML = `
+          <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; transform: rotate(-3deg);">
+            <img src="${escapeHTML(settings.promoImage)}" alt="عرض خاص" style="width: 100%; max-width: 400px; object-fit: contain; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));" loading="eager">
+          </div>
+        `;
+        $("heroAdd").style.display = "none"; // إخفاء زر الطلب
       } else {
-        $("heroAdd").style.display = "none";
+        // التراجع للعرض الافتراضي (البوكس العائلي)
+        let featured = productMap.get("family-box");
+        if (!featured) {
+            featured = products.find(p => p.category === "family");
+        }
+
+        if (featured) {
+          $("heroPhoto").innerHTML = featured.image
+            ? productImage(featured, 250, true)
+            : croppedImage(featured.crop, featured.name, { eager: true });
+          $("featuredName").textContent = featured.name;
+          $("featuredPrice").innerHTML = moneyMarkup(featured.price);
+          
+          $("heroAdd").style.display = "flex";
+          
+          const heroAddBtn = $("heroAdd");
+          const newHeroAdd = heroAddBtn.cloneNode(true);
+          heroAddBtn.parentNode.replaceChild(newHeroAdd, heroAddBtn);
+          newHeroAdd.addEventListener("click", () => addToCart(featured.id, 1));
+        } else {
+          $("heroAdd").style.display = "none";
+        }
       }
+      // --------------------------------------------------
 
       document.querySelectorAll("[data-open-poster]").forEach(button => {
         button.addEventListener("click", () => {
