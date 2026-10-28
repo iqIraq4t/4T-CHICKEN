@@ -6,7 +6,7 @@
   <title>لوحة تحكم 4T CHICKEN</title>
   <style>
     body { font-family: "Tajawal", sans-serif; background: #10110f; color: #f7f5ee; padding: 20px; margin: 0; }
-    .container { max-width: 700px; margin: auto; background: #191b17; padding: 25px; border-radius: 12px; border: 1px solid #30332a; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    .container { max-width: 800px; margin: auto; background: #191b17; padding: 25px; border-radius: 12px; border: 1px solid #30332a; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
     h1, h2 { text-align: center; color: #ffc431; margin-bottom: 20px; }
     .form-group { margin-bottom: 15px; }
     label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; color: #d7d8c9; }
@@ -15,17 +15,18 @@
     button { background: #ffc431; color: #10110f; font-weight: bold; cursor: pointer; border: none; margin-top: 10px; font-size: 16px; transition: 0.2s; }
     button:hover { background: #ffd263; }
     button:disabled { background: #555; color: #888; cursor: not-allowed; }
-    .btn-danger { background: #ee4636; color: white; }
+    .btn-danger { background: #ee4636; color: white; width: auto; padding: 6px 15px; margin: 0; font-size: 14px;}
     .btn-danger:hover { background: #ff7561; }
     .hidden { display: none; }
     .product-item { display: flex; justify-content: space-between; align-items: center; background: #22241e; padding: 12px; margin-bottom: 10px; border-radius: 8px; border-right: 4px solid #ffc431; }
     .product-info h4 { margin: 0 0 5px 0; font-size: 16px; }
     .product-info p { margin: 0; font-size: 13px; color: #a3a59a; }
     .logout-btn { background: transparent; border: 1px solid #ee4636; color: #ee4636; width: auto; margin-bottom: 20px; padding: 8px 20px; }
+    .logout-btn:hover { background: #ee4636; color: white; }
     .box { background: #10150d; padding: 20px; border-radius: 10px; border: 1px solid #303925; margin-bottom: 25px; }
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
     @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
-    #msg { text-align: center; font-weight: bold; margin-top: 15px; font-size: 16px; }
+    #msg, #promoMsg { text-align: center; font-weight: bold; margin-top: 15px; font-size: 15px; }
   </style>
 </head>
 <body>
@@ -51,8 +52,24 @@
       <button class="logout-btn" onclick="logout()">تسجيل خروج</button>
       <h1>لوحة تحكم 4T CHICKEN</h1>
       
+      <!-- صندوق إدارة صورة العرض (البانر) -->
+      <div class="box" style="border-color: #ffc431;">
+        <h2>🖼️ إدارة صورة العرض (البانر الرئيسي)</h2>
+        <p style="font-size: 13px; color: #a3a59a; margin-bottom: 15px; line-height: 1.6;">
+          ضع رابط صورة (يفضل أن تكون بخلفية شفافة PNG أو سوداء) لتظهر في منتصف الصفحة الرئيسية بدلاً من "بوكس فورتي العائلي".<br>
+          <strong>ملاحظة:</strong> اترك الخانة فارغة واضغط تحديث للعودة إلى عرض البوكس العائلي.
+        </p>
+        <div class="form-group">
+          <label>رابط صورة العرض</label>
+          <input type="url" id="promoImageUrl" placeholder="https://example.com/promo-image.png" dir="ltr">
+        </div>
+        <button type="button" onclick="updatePromoImage()">تحديث صورة العرض</button>
+        <p id="promoMsg"></p>
+      </div>
+
+      <!-- صندوق إضافة الوجبات -->
       <div class="box">
-        <h2>إضافة وجبة جديدة</h2>
+        <h2>🍔 إضافة وجبة جديدة</h2>
         <form id="addForm">
           <div class="grid-2">
             <div class="form-group">
@@ -80,17 +97,13 @@
             </select>
           </div>
 
-          <div class="form-group">
-            <label>رابط الصورة (اختياري - اتركه فارغاً لاستخدام صورة المنيو الأساسي)</label>
-            <input type="url" id="prodImage" placeholder="https://example.com/image.jpg" dir="ltr">
-          </div>
-
           <button type="submit" id="submitBtn">إضافة الوجبة للموقع</button>
         </form>
         <p id="msg"></p>
       </div>
 
-      <h2 style="margin-top: 30px;">قائمة الوجبات الحالية</h2>
+      <!-- قائمة الوجبات الحالية -->
+      <h2 style="margin-top: 30px;">📋 قائمة الوجبات الحالية</h2>
       <div id="productsList" style="max-height: 400px; overflow-y: auto;">
         <!-- سيتم عرض الوجبات هنا -->
       </div>
@@ -100,7 +113,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, serverTimestamp, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     // 🔴 ضع إعدادات Firebase الخاصة بك هنا
     const firebaseConfig = {
@@ -116,7 +129,7 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // دوال الدخول والخروج
+    // ---------------- دوال الدخول والخروج ----------------
     window.login = async () => {
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
@@ -141,44 +154,49 @@
       }
     });
 
-    // إضافة وجبة جديدة
+    // ---------------- تحديث صورة العرض (البانر) ----------------
+    window.updatePromoImage = async () => {
+      const url = document.getElementById("promoImageUrl").value.trim();
+      const msg = document.getElementById("promoMsg");
+      
+      try {
+        // تحديث حقل promoImage في مستند الإعدادات
+        // نستخدم merge: true حتى لا نمسح بقية الإعدادات (مثل رقم الواتساب)
+        await setDoc(doc(db, "settings", "config"), { promoImage: url }, { merge: true });
+        
+        msg.style.color = "#4caf50";
+        msg.innerText = url ? "✅ تم تحديث صورة العرض بنجاح!" : "✅ تم إزالة صورة العرض، سيعود البوكس العائلي للظهور.";
+        document.getElementById("promoImageUrl").value = "";
+      } catch (error) {
+        msg.style.color = "#ee4636";
+        msg.innerText = "❌ حدث خطأ: " + error.message;
+      }
+    };
+
+    // ---------------- إضافة منتج ----------------
     document.getElementById("addForm").addEventListener("submit", async (e) => {
       e.preventDefault();
-      
       const btn = document.getElementById("submitBtn");
       const msg = document.getElementById("msg");
       
       const name = document.getElementById("prodName").value;
       const price = parseInt(document.getElementById("prodPrice").value);
       const category = document.getElementById("prodCategory").value;
-      const imageUrl = document.getElementById("prodImage").value.trim();
 
       btn.disabled = true;
       btn.innerText = "جاري الحفظ...";
       msg.innerText = "";
 
       try {
-        const productData = { 
-          name: name, 
-          price: price, 
-          category: category, 
-          createdAt: serverTimestamp() 
-        };
-        
-        // إذا وضع رابط صورة، نضيفه. إذا تركه فارغاً، الموقع سيقص الصورة من المنيو الأساسي.
-        if (imageUrl) productData.image = imageUrl;
-
+        const productData = { name, price, category, createdAt: serverTimestamp() };
         await addDoc(collection(db, "products"), productData);
         
         msg.style.color = "#4caf50";
-        msg.innerText = "✅ تمت إضافة الوجبة بنجاح! ستظهر الآن في الموقع.";
+        msg.innerText = "✅ تمت إضافة الوجبة بنجاح!";
         
-        // تصفير النموذج
         document.getElementById("addForm").reset();
         loadProducts();
-        
       } catch (error) {
-        console.error(error);
         msg.style.color = "#ee4636";
         msg.innerText = "❌ حدث خطأ: " + error.message;
       } finally {
@@ -187,7 +205,7 @@
       }
     });
 
-    // جلب وعرض وحذف الوجبات
+    // ---------------- عرض وحذف المنتجات ----------------
     async function loadProducts() {
       const list = document.getElementById("productsList");
       list.innerHTML = "جاري التحميل...";
@@ -195,7 +213,7 @@
         const querySnapshot = await getDocs(collection(db, "products"));
         list.innerHTML = "";
         if(querySnapshot.empty) { 
-          list.innerHTML = "<p style='text-align:center;'>لا توجد وجبات بعد. استخدم النموذج بالأعلى لإضافة وجبات.</p>"; 
+          list.innerHTML = "<p style='text-align:center;'>لا توجد وجبات بعد.</p>"; 
           return; 
         }
         
@@ -208,7 +226,7 @@
               <h4>${data.name}</h4>
               <p>السعر: ${data.price} د.ع | القسم: ${data.category}</p>
             </div>
-            <button class="btn-danger" style="width:auto; padding:5px 15px; margin:0;" onclick="deleteProduct('${doc.id}')">حذف</button>
+            <button class="btn-danger" onclick="deleteProduct('${doc.id}')">حذف</button>
           `;
           list.appendChild(item);
         });
@@ -218,7 +236,7 @@
     }
 
     window.deleteProduct = async (id) => {
-      if(confirm("هل أنت متأكد من حذف هذه الوجبة نهائياً؟")) {
+      if(confirm("هل أنت متأكد من حذف هذه الوجبة؟")) {
         try { 
           await deleteDoc(doc(db, "products", id)); 
           loadProducts(); 
