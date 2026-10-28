@@ -478,7 +478,6 @@
       .product-card:hover, .button:hover:not(:disabled) { transform: none; }
     }
   </style>
-
 </head>
 <body>
   <a class="skip-link" href="#menu">انتقل إلى المنيو</a>
@@ -567,7 +566,7 @@
           <div class="hero-photo" id="heroPhoto"></div>
           <button class="hero-featured" id="heroAdd" aria-label="أضف بوكس فور تي العائلي إلى الطلب">
             <span>
-              <span class="featured-name" id="featuredName">بوكس فور تي العائلي</span>
+              <span class="featured-name" id="featuredName">جاري التحميل...</span>
               <span class="money" id="featuredPrice"></span>
             </span>
             <span class="featured-plus"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg></span>
@@ -643,7 +642,10 @@
         <span id="resultsCount" aria-live="polite"></span>
         <span class="currency-note">الأسعار بالدينار العراقي</span>
       </div>
-      <div class="product-grid" id="productGrid"></div>
+      <div class="product-grid" id="productGrid">
+        <!-- سيتم تحميل المنتجات هنا ديناميكياً -->
+        <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--muted);">جاري تحميل المنيو...</div>
+      </div>
       <div class="empty-results" id="emptyResults" hidden>
         <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
         <h3>ما لقينا هالوجبة</h3>
@@ -828,914 +830,601 @@
     </div>
   </noscript>
 
-  <!-- مصدر البيانات الوحيد: عدّل الإعدادات والأسماء والأسعار والصور هنا.
-       crop = [x, y, width, height] ضمن الصورة الأصلية 714 × 1600.
-       يمكن إضافة image لكل منتج لاستخدام صورة مستقلة بدلاً من القص.
-       روابط الحسابات فارغة عمداً، ويمكن إضافتها بعد التأكد منها. -->
-  <script type="application/json" id="restaurantData">
-  {
-    "settings": {
-      "brand": "4T CHICKEN",
-      "phone": "9647886891001",
-      "displayPhone": "+9647886891001",
-      "location": "الرمادي — ناحية البريموك",
-      "sourceImage": "https://www.designarena.ai/u/f68cf89b-6a06-49b6-8ac3-893497f86224",
-      "sourceWidth": 714,
-      "sourceHeight": 1600,
-      "logoCrop": [
-        215,
-        155,
-        286,
-        189
-      ],
-      "posterCrop": [
-        0,
-        148,
-        714,
-        1080
-      ],
-      "instagram": {
-        "handle": "4t_chicken_iq",
-        "url": ""
-      },
-      "tiktok": {
-        "handle": "4t_chicken",
-        "url": ""
-      }
-    },
-    "categories": [
-      {
-        "id": "sandwiches",
-        "name": "السندويشات"
-      },
-      {
-        "id": "saj",
-        "name": "الصاج"
-      },
-      {
-        "id": "burgers",
-        "name": "البركر"
-      },
-      {
-        "id": "risotto",
-        "name": "الرزيتو"
-      },
-      {
-        "id": "chicken",
-        "name": "وجبات كنتاكي"
-      },
-      {
-        "id": "family",
-        "name": "بوكس فور تي العائلي"
-      },
-      {
-        "id": "snacks",
-        "name": "الوجبات الخفيفة"
-      },
-      {
-        "id": "drinks",
-        "name": "المشروبات الغازية"
-      }
-    ],
-    "products": [
-      {
-        "id": "shawarma-sandwich",
-        "category": "sandwiches",
-        "name": "شاورما دجاج ساندويش",
-        "price": 2500,
-        "crop": [
-          21,
-          398,
-          116,
-          86
-        ]
-      },
-      {
-        "id": "fajita-sandwich",
-        "category": "sandwiches",
-        "name": "فاهيتا دجاج ساندويش",
-        "price": 4000,
-        "crop": [
-          142,
-          397,
-          114,
-          87
-        ]
-      },
-      {
-        "id": "zinger-sandwich",
-        "category": "sandwiches",
-        "name": "زنكر ساندويش",
-        "price": 4000,
-        "crop": [
-          265,
-          397,
-          106,
-          88
-        ]
-      },
-      {
-        "id": "saj-roll",
-        "category": "saj",
-        "name": "لفة صاج",
-        "price": 2000,
-        "crop": [
-          389,
-          399,
-          104,
-          87
-        ]
-      },
-      {
-        "id": "saj-meal",
-        "category": "saj",
-        "name": "وجبة صاج",
-        "price": 5000,
-        "crop": [
-          494,
-          401,
-          100,
-          84
-        ]
-      },
-      {
-        "id": "saj-tortilla",
-        "category": "saj",
-        "name": "تورتيلا صاج",
-        "price": 4000,
-        "crop": [
-          597,
-          401,
-          97,
-          84
-        ]
-      },
-      {
-        "id": "chicken-burger",
-        "category": "burgers",
-        "name": "بركر دجاج كلاسيك",
-        "price": 4000,
-        "crop": [
-          23,
-          580,
-          111,
-          96
-        ]
-      },
-      {
-        "id": "beef-burger",
-        "category": "burgers",
-        "name": "بركر لحم كلاسيك",
-        "price": 5000,
-        "crop": [
-          141,
-          580,
-          102,
-          96
-        ]
-      },
-      {
-        "id": "double-burger",
-        "category": "burgers",
-        "name": "بركر فور تي دبل",
-        "price": 7000,
-        "crop": [
-          256,
-          580,
-          99,
-          96
-        ]
-      },
-      {
-        "id": "rizo",
-        "category": "risotto",
-        "name": "ريزو",
-        "price": 5000,
-        "crop": [
-          372,
-          590,
-          79,
-          83
-        ]
-      },
-      {
-        "id": "rizo-shawarma",
-        "category": "risotto",
-        "name": "ريزو شاورما",
-        "price": 5000,
-        "crop": [
-          456,
-          593,
-          78,
-          80
-        ]
-      },
-      {
-        "id": "rizo-spicy",
-        "category": "risotto",
-        "name": "ريزو سبايسي",
-        "price": 5500,
-        "crop": [
-          536,
-          590,
-          79,
-          83
-        ]
-      },
-      {
-        "id": "rizo-smoked",
-        "category": "risotto",
-        "name": "ريزو مدخن",
-        "price": 5500,
-        "crop": [
-          618,
-          592,
-          75,
-          81
-        ]
-      },
-      {
-        "id": "chicken-3",
-        "category": "chicken",
-        "name": "وجبة كنتاكي 3 قطع",
-        "price": 8000,
-        "crop": [
-          30,
-          778,
-          95,
-          89
-        ]
-      },
-      {
-        "id": "chicken-5",
-        "category": "chicken",
-        "name": "وجبة كنتاكي 5 قطع",
-        "price": 12000,
-        "crop": [
-          146,
-          777,
-          99,
-          91
-        ]
-      },
-      {
-        "id": "chicken-7",
-        "category": "chicken",
-        "name": "وجبة كنتاكي 7 قطع",
-        "price": 15000,
-        "crop": [
-          263,
-          776,
-          102,
-          94
-        ]
-      },
-      {
-        "id": "family-box",
-        "category": "family",
-        "name": "بوكس فور تي العائلي",
-        "price": 25000,
-        "crop": [
-          395,
-          781,
-          219,
-          123
-        ]
-      },
-      {
-        "id": "finger",
-        "category": "snacks",
-        "name": "فدق فنكر",
-        "price": 1000,
-        "crop": [
-          35,
-          978,
-          69,
-          84
-        ]
-      },
-      {
-        "id": "finger-small",
-        "category": "snacks",
-        "name": "ماعون فنكر صغير",
-        "price": 2000,
-        "crop": [
-          136,
-          982,
-          69,
-          80
-        ]
-      },
-      {
-        "id": "finger-cheese",
-        "category": "snacks",
-        "name": "ماعون فنكر بالجبنة",
-        "price": 3000,
-        "crop": [
-          229,
-          976,
-          76,
-          87
-        ]
-      },
-      {
-        "id": "finger-meat",
-        "category": "snacks",
-        "name": "ماعون فنكر باللحم",
-        "price": 5000,
-        "crop": [
-          327,
-          970,
-          83,
-          93
-        ]
-      },
-      {
-        "id": "pepsi",
-        "category": "drinks",
-        "name": "بيبسي",
-        "price": 500,
-        "crop": [
-          452,
-          976,
-          59,
-          86
-        ]
-      },
-      {
-        "id": "diet-pepsi",
-        "category": "drinks",
-        "name": "بيبسي دايت",
-        "price": 500,
-        "crop": [
-          534,
-          976,
-          61,
-          86
-        ]
-      },
-      {
-        "id": "seven-up",
-        "category": "drinks",
-        "name": "سفن",
-        "price": 500,
-        "crop": [
-          618,
-          978,
-          59,
-          84
-        ]
-      }
-    ]
-  }
-  </script>
+  <!-- Firebase & App Logic -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-  <script>
-    (() => {
-      "use strict";
+    // 🔴 ضع إعدادات Firebase الخاصة بك هنا (نفس الإعدادات التي في admin.html)
+    const firebaseConfig = {
+      apiKey: "AIzaSyBfY81QxRJak4X2h7PWjCkFPK9-9g7btDI",
+      authDomain: "t-chicken.firebaseapp.com",
+      projectId: "t-chicken",
+      storageBucket: "t-chicken.firebasestorage.app",
+      messagingSenderId: "354053502502",
+      appId: "1:354053502502:web:bce801d4ba6a2ae46a58e7"
+    };
 
-      const embeddedData = JSON.parse(document.getElementById("restaurantData").textContent);
-      const data = JSON.parse(JSON.stringify(embeddedData));
-      const originalProductPrices = Object.fromEntries(embeddedData.products.map(product => [product.id, product.price]));
-const { settings, categories, products } = data;
-      const productMap = new Map(products.map(product => [product.id, product]));
-      const categoryMap = new Map(categories.map(category => [category.id, category.name]));
-      const STORAGE_KEY = "4t-chicken-cart-v1";
-      const MAX_QUANTITY = 99;
-      const numberFormat = new Intl.NumberFormat("en-US");
-      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-      const $ = id => document.getElementById(id);
-      const escapeHTML = value => String(value).replace(/[&<>"']/g, char => ({
-        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
-      }[char]));
-      const icon = name => `<svg class="icon" aria-hidden="true"><use href="#i-${name}"/></svg>`;
-      const moneyMarkup = amount => `<bdi dir="ltr">${numberFormat.format(amount)}</bdi><small>د.ع</small>`;
-      const moneyText = amount => `${numberFormat.format(amount)} د.ع`;
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-      let activeCategory = "all";
-      let searchValue = "";
-      let cart = loadCart();
-      let toastTimer;
-      let lastOrderMessage = "";
-      const draftQuantities = Object.create(null);
+    let settings = {};
+    let categories = [];
+    let products = [];
+    let productMap = new Map();
+    let categoryMap = new Map();
+    const STORAGE_KEY = "4t-chicken-cart-v1";
+    const MAX_QUANTITY = 99;
+    const numberFormat = new Intl.NumberFormat("en-US");
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const $ = id => document.getElementById(id);
+    const escapeHTML = value => String(value).replace(/[&<>"']/g, char => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    }[char]));
+    const icon = name => `<svg class="icon" aria-hidden="true"><use href="#i-${name}"/></svg>`;
+    const moneyMarkup = amount => `<bdi dir="ltr">${numberFormat.format(amount)}</bdi><small>د.ع</small>`;
+    const moneyText = amount => `${numberFormat.format(amount)} د.ع`;
 
-      function croppedImage(crop, label, options = {}) {
-        const [x, y, width, height] = crop;
-        const imageStyle = [
-          `width:${settings.sourceWidth / width * 100}%`,
-          `height:${settings.sourceHeight / height * 100}%`,
-          `left:${-x / width * 100}%`,
-          `top:${-y / height * 100}%`
-        ].join(";");
-        const containerStyle = `aspect-ratio:${width}/${height};${options.width ? `width:${options.width}px;` : ""}`;
-        return `<span class="image-crop" style="${containerStyle}" role="img" aria-label="${escapeHTML(label)}">
-          <img src="${escapeHTML(settings.sourceImage)}" alt="" style="${imageStyle}" loading="${options.eager ? "eager" : "lazy"}" decoding="async" draggable="false" ${options.eager ? 'fetchpriority="high"' : ""}>
-          <span class="crop-fallback" aria-hidden="true">${icon("image")}<span>الصورة غير متاحة</span></span>
+    let activeCategory = "all";
+    let searchValue = "";
+    let cart = Object.create(null);
+    let toastTimer;
+    let lastOrderMessage = "";
+    const draftQuantities = Object.create(null);
+
+    function croppedImage(crop, label, options = {}) {
+      if (!crop || !settings.sourceImage) return `<span class="crop-fallback">${icon("image")}<span>لا توجد صورة</span></span>`;
+      
+      const [x, y, width, height] = crop;
+      const imageStyle = [
+        `width:${settings.sourceWidth / width * 100}%`,
+        `height:${settings.sourceHeight / height * 100}%`,
+        `left:${-x / width * 100}%`,
+        `top:${-y / height * 100}%`
+      ].join(";");
+      const containerStyle = `aspect-ratio:${width}/${height};${options.width ? `width:${options.width}px;` : ""}`;
+      return `<span class="image-crop" style="${containerStyle}" role="img" aria-label="${escapeHTML(label)}">
+        <img src="${escapeHTML(settings.sourceImage)}" alt="" style="${imageStyle}" loading="${options.eager ? "eager" : "lazy"}" decoding="async" draggable="false" ${options.eager ? 'fetchpriority="high"' : ""}>
+        <span class="crop-fallback" aria-hidden="true">${icon("image")}<span>الصورة غير متاحة</span></span>
+      </span>`;
+    }
+
+    function productImage(product, targetHeight = 127, eager = false) {
+      if (product.image) {
+        return `<span class="image-crop" style="width:${targetHeight * 1.3}px;aspect-ratio:1.3" role="img" aria-label="${escapeHTML(product.name)}">
+          <img src="${escapeHTML(product.image)}" alt="" style="inset:0;width:100%;height:100%;object-fit:contain" loading="${eager ? "eager" : "lazy"}" decoding="async">
+          <span class="crop-fallback" aria-hidden="true">${icon("image")}<span>صورة الوجبة</span></span>
         </span>`;
       }
-
-      function productImage(product, targetHeight = 127, eager = false) {
-        if (product.image) {
-          return `<span class="image-crop" style="width:${targetHeight * 1.3}px;aspect-ratio:1.3" role="img" aria-label="${escapeHTML(product.name)}">
-            <img src="${escapeHTML(product.image)}" alt="" style="inset:0;width:100%;height:100%;object-fit:contain" loading="${eager ? "eager" : "lazy"}" decoding="async">
-            <span class="crop-fallback" aria-hidden="true">${icon("image")}<span>صورة الوجبة</span></span>
-          </span>`;
-        }
-        if (Array.isArray(product.crop) && product.crop.length === 4) {
-          return croppedImage(product.crop, product.name, {
-            width: Math.min(targetHeight * product.crop[2] / product.crop[3], targetHeight * 1.8),
-            eager
-          });
-        }
-        return `<span class="image-crop asset-unavailable" style="width:${targetHeight * 1.3}px;aspect-ratio:1.3" role="img" aria-label="${escapeHTML(product.name)}"><span class="crop-fallback" aria-hidden="true">${icon("image")}<span>أضف صورة للوجبة</span></span></span>`;
-      }
-
-      document.addEventListener("error", event => {
-        if (event.target instanceof HTMLImageElement && event.target.parentElement?.classList.contains("image-crop")) {
-          event.target.hidden = true;
-          event.target.parentElement.classList.add("asset-unavailable");
-        }
-      }, true);
-
-      function sanitizeCart(raw) {
-        const clean = Object.create(null);
-        if (!raw || !Array.isArray(raw.items)) return clean;
-        raw.items.forEach(item => {
-          if (item && productMap.has(item.id) && Number.isInteger(item.quantity) && item.quantity > 0) {
-            clean[item.id] = Math.min(MAX_QUANTITY, item.quantity);
-          }
+      if (product.crop) {
+        return croppedImage(product.crop, product.name, {
+          width: Math.min(targetHeight * product.crop[2] / product.crop[3], targetHeight * 1.8),
+          eager
         });
-        return clean;
       }
+      return `<span class="crop-fallback">${icon("image")}<span>صورة الوجبة</span></span>`;
+    }
 
-      function loadCart() {
-        try {
-          return sanitizeCart(JSON.parse(localStorage.getItem(STORAGE_KEY)));
-        } catch {
-          return Object.create(null);
+    document.addEventListener("error", event => {
+      if (event.target instanceof HTMLImageElement && event.target.parentElement?.classList.contains("image-crop")) {
+        event.target.hidden = true;
+        event.target.parentElement.classList.add("asset-unavailable");
+      }
+    }, true);
+
+    function sanitizeCart(raw) {
+      const clean = Object.create(null);
+      if (!raw || !Array.isArray(raw.items)) return clean;
+      raw.items.forEach(item => {
+        if (item && productMap.has(item.id) && Number.isInteger(item.quantity) && item.quantity > 0) {
+          clean[item.id] = Math.min(MAX_QUANTITY, item.quantity);
         }
+      });
+      return clean;
+    }
+
+    function loadCart() {
+      try {
+        const raw = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        cart = sanitizeCart(raw);
+      } catch {
+        cart = Object.create(null);
       }
+    }
 
-      function saveCart() {
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify({
-            version: 1,
-            items: Object.entries(cart).map(([id, quantity]) => ({ id, quantity }))
-          }));
-        } catch {
-          // The cart remains usable in memory when browser storage is unavailable.
-        }
+    function saveCart() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          version: 1,
+          items: Object.entries(cart).map(([id, quantity]) => ({ id, quantity }))
+        }));
+      } catch {}
+    }
+
+    function cartItems() {
+      return products.filter(product => cart[product.id] > 0)
+        .map(product => ({ product, quantity: cart[product.id], subtotal: product.price * cart[product.id] }));
+    }
+
+    function cartTotals() {
+      return cartItems().reduce((result, item) => {
+        result.quantity += item.quantity;
+        result.amount += item.subtotal;
+        return result;
+      }, { quantity: 0, amount: 0 });
+    }
+
+    function showToast(message) {
+      clearTimeout(toastTimer);
+      $("toastText").textContent = message;
+      $("toast").classList.add("show");
+      toastTimer = setTimeout(() => $("toast").classList.remove("show"), 3000);
+    }
+
+    function addToCart(id, quantity) {
+      if (!productMap.has(id) || !Number.isInteger(quantity) || quantity < 1) return;
+      const previous = cart[id] || 0;
+      if (previous >= MAX_QUANTITY) {
+        showToast("الحد الأعلى للصنف الواحد هو 99.");
+        return;
       }
+      const added = Math.min(quantity, MAX_QUANTITY - previous);
+      cart[id] = previous + added;
+      updateCart(true);
+      showToast(`أُضيف ${productMap.get(id).name}${added > 1 ? ` × ${added}` : ""} إلى السلة`);
+    }
 
-      function cartItems() {
-        return products.filter(product => cart[product.id] > 0)
-          .map(product => ({ product, quantity: cart[product.id], subtotal: product.price * cart[product.id] }));
-      }
+    function changeCart(id, delta) {
+      if (!productMap.has(id) || !cart[id]) return;
+      const next = Math.min(MAX_QUANTITY, Math.max(0, cart[id] + delta));
+      if (next === 0) delete cart[id];
+      else cart[id] = next;
+      updateCart(true);
+    }
 
-      function cartTotals() {
-        return cartItems().reduce((result, item) => {
-          result.quantity += item.quantity;
-          result.amount += item.subtotal;
-          return result;
-        }, { quantity: 0, amount: 0 });
-      }
+    function updateCart(persist = false) {
+      if (persist) saveCart();
+      const totals = cartTotals();
+      $("headerCount").textContent = totals.quantity > 99 ? "99+" : totals.quantity;
+      $("mobileCount").textContent = totals.quantity > 99 ? "99+" : totals.quantity;
+      $("openCart").setAttribute("aria-label", `سلة الطلبات، الكمية ${totals.quantity}، الإجمالي ${moneyText(totals.amount)}`);
+      $("mobileCart").setAttribute("aria-label", `فتح سلة الطلبات، الكمية ${totals.quantity}، الإجمالي ${moneyText(totals.amount)}`);
+      $("mobileTotal").className = totals.quantity ? "money" : "mobile-empty-label";
+      $("mobileTotal").innerHTML = totals.quantity ? moneyMarkup(totals.amount) : "اختار وجبتك الأولى";
+      $("cartAnnounce").textContent = `كمية الأصناف في السلة: ${totals.quantity}. الإجمالي ${moneyText(totals.amount)}.`;
 
-      function showToast(message) {
-        clearTimeout(toastTimer);
-        $("toastText").textContent = message;
-        $("toast").classList.add("show");
-        toastTimer = setTimeout(() => $("toast").classList.remove("show"), 3000);
-      }
+      document.querySelectorAll("[data-cart-indicator]").forEach(element => {
+        const quantity = cart[element.dataset.cartIndicator] || 0;
+        element.hidden = quantity === 0;
+        element.textContent = quantity;
+        element.setAttribute("aria-label", `${quantity} في السلة`);
+      });
 
-      function addToCart(id, quantity) {
-        if (!productMap.has(id) || !Number.isInteger(quantity) || quantity < 1) return;
-        const previous = cart[id] || 0;
-        if (previous >= MAX_QUANTITY) {
-          showToast("الحد الأعلى للصنف الواحد هو 99.");
-          return;
-        }
-        const added = Math.min(quantity, MAX_QUANTITY - previous);
-        cart[id] = previous + added;
-        updateCart(true);
-        showToast(`أُضيف ${productMap.get(id).name}${added > 1 ? ` × ${added}` : ""} إلى السلة`);
-      }
+      renderCart();
+      renderCheckoutSummary();
+      $("orderStatus").hidden = true;
+      lastOrderMessage = "";
+    }
 
-      function changeCart(id, delta) {
-        if (!productMap.has(id) || !cart[id]) return;
-        const next = Math.min(MAX_QUANTITY, Math.max(0, cart[id] + delta));
-        if (next === 0) delete cart[id];
-        else cart[id] = next;
-        updateCart(true);
-      }
+    function normalizeSearch(value) {
+      return value.trim().toLowerCase()
+        .replace(/[\u064B-\u065F\u0670\u0640]/g, "")
+        .replace(/[أإآ]/g, "ا")
+        .replace(/ى/g, "ي")
+        .replace(/ة/g, "ه");
+    }
 
-      function updateCart(persist = false) {
-        if (persist) saveCart();
-        const totals = cartTotals();
-        $("headerCount").textContent = totals.quantity > 99 ? "99+" : totals.quantity;
-        $("mobileCount").textContent = totals.quantity > 99 ? "99+" : totals.quantity;
-        $("openCart").setAttribute("aria-label", `سلة الطلبات، الكمية ${totals.quantity}، الإجمالي ${moneyText(totals.amount)}`);
-        $("mobileCart").setAttribute("aria-label", `فتح سلة الطلبات، الكمية ${totals.quantity}، الإجمالي ${moneyText(totals.amount)}`);
-        $("mobileTotal").className = totals.quantity ? "money" : "mobile-empty-label";
-        $("mobileTotal").innerHTML = totals.quantity ? moneyMarkup(totals.amount) : "اختار وجبتك الأولى";
-        $("cartAnnounce").textContent = `كمية الأصناف في السلة: ${totals.quantity}. الإجمالي ${moneyText(totals.amount)}.`;
+    function renderCategories() {
+      const allCategories = [{ id: "all", name: "الكل" }, ...categories];
+      $("categoryList").innerHTML = allCategories.map(category =>
+        `<button type="button" class="category-button ${activeCategory === category.id ? "active" : ""}" data-category="${category.id}" aria-pressed="${activeCategory === category.id}">
+          ${category.id === "all" ? icon("grid") : ""}${escapeHTML(category.name)}
+        </button>`
+      ).join("");
+    }
 
-        document.querySelectorAll("[data-cart-indicator]").forEach(element => {
-          const quantity = cart[element.dataset.cartIndicator] || 0;
-          element.hidden = quantity === 0;
-          element.textContent = quantity;
-          element.setAttribute("aria-label", `${quantity} في السلة`);
-        });
+    function quantityControl(id, quantity, context) {
+      const name = escapeHTML(productMap.get(id).name);
+      const isDraft = context === "draft";
+      const actionPrefix = isDraft ? "draft" : "cart";
+      return `<div class="quantity" role="group" aria-label="${isDraft ? "الكمية المطلوب إضافتها من" : "تعديل كمية"} ${name}">
+        <button type="button" data-action="${actionPrefix}-minus" data-id="${id}" aria-label="تقليل كمية ${name}" ${quantity === 0 ? "disabled" : ""}>${icon("minus")}</button>
+        <output ${isDraft ? `data-draft-output="${id}"` : ""} aria-live="polite">${quantity}</output>
+        <button type="button" data-action="${actionPrefix}-plus" data-id="${id}" aria-label="زيادة كمية ${name}" ${quantity >= MAX_QUANTITY ? "disabled" : ""}>${icon("plus")}</button>
+      </div>`;
+    }
 
-        renderCart();
-        renderCheckoutSummary();
-        $("orderStatus").hidden = true;
-        lastOrderMessage = "";
-      }
+    function renderProducts() {
+      const query = normalizeSearch(searchValue);
+      const visible = products.filter(product =>
+        (activeCategory === "all" || product.category === activeCategory) &&
+        normalizeSearch(product.name).includes(query)
+      );
 
-      function normalizeSearch(value) {
-        return value.trim().toLowerCase()
-          .replace(/[\u064B-\u065F\u0670\u0640]/g, "")
-          .replace(/[أإآ]/g, "ا")
-          .replace(/ى/g, "ي")
-          .replace(/ة/g, "ه");
-      }
+      $("resultsCount").textContent = `الأصناف المتاحة: ${visible.length}`;
+      $("emptyResults").hidden = visible.length !== 0;
+      $("productGrid").hidden = visible.length === 0;
+      
+      if (visible.length === 0) return;
 
-      function renderCategories() {
-        const allCategories = [{ id: "all", name: "الكل" }, ...categories];
-        $("categoryList").innerHTML = allCategories.map(category =>
-          `<button type="button" class="category-button ${activeCategory === category.id ? "active" : ""}" data-category="${category.id}" aria-pressed="${activeCategory === category.id}">
-            ${category.id === "all" ? icon("grid") : ""}${escapeHTML(category.name)}
-          </button>`
-        ).join("");
-      }
+      $("productGrid").innerHTML = visible.map((product, index) => {
+        const quantity = draftQuantities[product.id] ?? 1;
+        const cartQuantity = cart[product.id] || 0;
+        return `<article class="product-card" data-product="${product.id}" aria-labelledby="name-${product.id}">
+          <div class="product-photo">
+            <span class="product-category">${escapeHTML(categoryMap.get(product.category) || "")}</span>
+            <span class="in-cart" data-cart-indicator="${product.id}" aria-label="${cartQuantity} في السلة" ${cartQuantity ? "" : "hidden"}>${cartQuantity}</span>
+            ${productImage(product, product.category === "drinks" ? 119 : 127, index < 4)}
+          </div>
+          <div class="product-body">
+            <h3 class="product-name" id="name-${product.id}">${escapeHTML(product.name)}</h3>
+            <div class="price-controls">
+              <span class="money product-price">${moneyMarkup(product.price)}</span>
+              ${quantityControl(product.id, quantity, "draft")}
+            </div>
+            <button type="button" class="button button-gold add-button" data-action="add" data-id="${product.id}" aria-label="أضف ${escapeHTML(product.name)} إلى الطلب" ${quantity === 0 ? "disabled" : ""}>
+              ${icon("plus")}<span>أضف إلى الطلب</span>
+            </button>
+          </div>
+        </article>`;
+      }).join("");
+    }
 
-      function quantityControl(id, quantity, context) {
-        const name = escapeHTML(productMap.get(id).name);
-        const isDraft = context === "draft";
-        const actionPrefix = isDraft ? "draft" : "cart";
-        return `<div class="quantity" role="group" aria-label="${isDraft ? "الكمية المطلوب إضافتها من" : "تعديل كمية"} ${name}">
-          <button type="button" data-action="${actionPrefix}-minus" data-id="${id}" aria-label="تقليل كمية ${name}" ${quantity === 0 ? "disabled" : ""}>${icon("minus")}</button>
-          <output ${isDraft ? `data-draft-output="${id}"` : ""} aria-live="polite">${quantity}</output>
-          <button type="button" data-action="${actionPrefix}-plus" data-id="${id}" aria-label="زيادة كمية ${name}" ${quantity >= MAX_QUANTITY ? "disabled" : ""}>${icon("plus")}</button>
+    function updateDraft(id, delta) {
+      const value = Math.min(MAX_QUANTITY, Math.max(0, (draftQuantities[id] ?? 1) + delta));
+      draftQuantities[id] = value;
+      const card = document.querySelector(`[data-product="${id}"]`);
+      if (!card) return;
+      card.querySelector("[data-draft-output]").textContent = value;
+      card.querySelector('[data-action="draft-minus"]').disabled = value === 0;
+      card.querySelector('[data-action="draft-plus"]').disabled = value >= MAX_QUANTITY;
+      card.querySelector('[data-action="add"]').disabled = value === 0;
+    }
+
+    function renderCart() {
+      const items = cartItems();
+      const totals = cartTotals();
+      $("cartFooter").hidden = items.length === 0;
+      $("checkoutButton").disabled = items.length === 0;
+      $("cartSubtitle").textContent = items.length ? `عدد الأصناف المختلفة: ${items.length} · الكمية: ${totals.quantity}` : "كل اللي تشتهيه، بمكان واحد.";
+      $("cartTotal").innerHTML = moneyMarkup(totals.amount);
+
+      if (!items.length) {
+        $("cartContent").innerHTML = `<div class="cart-empty">
+          <span class="empty-cart-icon">${icon("bag")}</span>
+          <h3>سلتك بعده فارغة</h3>
+          <p>اختار شي على ذوقك من المنيو.</p>
+          <button type="button" class="button button-gold" data-action="browse-menu">شوف المنيو ${icon("left")}</button>
         </div>`;
+        return;
       }
 
-      function renderProducts() {
-        const query = normalizeSearch(searchValue);
-        const visible = products.filter(product =>
-          (activeCategory === "all" || product.category === activeCategory) &&
-          normalizeSearch(product.name).includes(query)
-        );
-
-        $("resultsCount").textContent = `الأصناف المتاحة: ${visible.length}`;
-        $("emptyResults").hidden = visible.length !== 0;
-        $("productGrid").hidden = visible.length === 0;
-        $("productGrid").innerHTML = visible.map((product, index) => {
-          const quantity = draftQuantities[product.id] ?? 1;
-          const cartQuantity = cart[product.id] || 0;
-          return `<article class="product-card" data-product="${product.id}" aria-labelledby="name-${product.id}">
-            <div class="product-photo">
-              <span class="product-category">${escapeHTML(categoryMap.get(product.category))}</span>
-              <span class="in-cart" data-cart-indicator="${product.id}" aria-label="${cartQuantity} في السلة" ${cartQuantity ? "" : "hidden"}>${cartQuantity}</span>
-              ${productImage(product, product.category === "drinks" ? 119 : 127, index < 4)}
+      $("cartContent").innerHTML = items.map(({ product, quantity, subtotal }) =>
+        `<article class="cart-item">
+          <div class="cart-thumb">${productImage(product, 57)}</div>
+          <div>
+            <div class="cart-item-top">
+              <h3 class="cart-item-name">${escapeHTML(product.name)}</h3>
+              <button type="button" class="remove-item" data-action="remove" data-id="${product.id}" aria-label="حذف ${escapeHTML(product.name)} من السلة">${icon("trash")}</button>
             </div>
-            <div class="product-body">
-              <h3 class="product-name" id="name-${product.id}">${escapeHTML(product.name)}</h3>
-              <div class="price-controls">
-                <span class="money product-price">${moneyMarkup(product.price)}</span>
-                ${quantityControl(product.id, quantity, "draft")}
-              </div>
-              <button type="button" class="button button-gold add-button" data-action="add" data-id="${product.id}" aria-label="أضف ${escapeHTML(product.name)} إلى الطلب" ${quantity === 0 ? "disabled" : ""}>
-                ${icon("plus")}<span>أضف إلى الطلب</span>
-              </button>
+            <p class="cart-unit">سعر الوحدة: <bdi>${moneyText(product.price)}</bdi></p>
+            <div class="cart-item-bottom">
+              ${quantityControl(product.id, quantity, "cart")}
+              <span class="money cart-item-total">${moneyMarkup(subtotal)}</span>
             </div>
-          </article>`;
-        }).join("");
-      }
+          </div>
+        </article>`
+      ).join("");
+    }
 
-      function updateDraft(id, delta) {
-        const value = Math.min(MAX_QUANTITY, Math.max(0, (draftQuantities[id] ?? 1) + delta));
-        draftQuantities[id] = value;
-        const card = document.querySelector(`[data-product="${id}"]`);
-        if (!card) return;
-        card.querySelector("[data-draft-output]").textContent = value;
-        card.querySelector('[data-action="draft-minus"]').disabled = value === 0;
-        card.querySelector('[data-action="draft-plus"]').disabled = value >= MAX_QUANTITY;
-        card.querySelector('[data-action="add"]').disabled = value === 0;
-      }
+    function renderCheckoutSummary() {
+      const items = cartItems();
+      $("checkoutItems").innerHTML = items.map(({ product, quantity, subtotal }) =>
+        `<div class="checkout-line">
+          <span><strong>${escapeHTML(product.name)}</strong><small>${quantity} × ${moneyText(product.price)}</small></span>
+          <span class="money">${moneyMarkup(subtotal)}</span>
+        </div>`
+      ).join("");
+      $("checkoutTotal").innerHTML = moneyMarkup(cartTotals().amount);
+      $("sendOrder").disabled = items.length === 0;
+    }
 
-      $("productGrid").addEventListener("click", event => {
-        const button = event.target.closest("button[data-action]");
-        if (!button) return;
-        const { action, id } = button.dataset;
-        if (action === "add") addToCart(id, draftQuantities[id] ?? 1);
-        if (action === "draft-minus") updateDraft(id, -1);
-        if (action === "draft-plus") updateDraft(id, 1);
+    $("productGrid").addEventListener("click", event => {
+      const button = event.target.closest("button[data-action]");
+      if (!button) return;
+      const { action, id } = button.dataset;
+      if (action === "add") addToCart(id, draftQuantities[id] ?? 1);
+      if (action === "draft-minus") updateDraft(id, -1);
+      if (action === "draft-plus") updateDraft(id, 1);
+    });
+
+    $("categoryList").addEventListener("click", event => {
+      const button = event.target.closest("[data-category]");
+      if (!button) return;
+      activeCategory = button.dataset.category;
+      $("categoryList").querySelectorAll("button").forEach(item => {
+        const active = item.dataset.category === activeCategory;
+        item.classList.toggle("active", active);
+        item.setAttribute("aria-pressed", String(active));
       });
+      renderProducts();
+      button.scrollIntoView({ behavior: reducedMotion.matches ? "auto" : "smooth", block: "nearest", inline: "nearest" });
+    });
 
-      $("categoryList").addEventListener("click", event => {
-        const button = event.target.closest("[data-category]");
-        if (!button) return;
-        activeCategory = button.dataset.category;
-        $("categoryList").querySelectorAll("button").forEach(item => {
-          const active = item.dataset.category === activeCategory;
-          item.classList.toggle("active", active);
-          item.setAttribute("aria-pressed", String(active));
-        });
-        renderProducts();
-        button.scrollIntoView({ behavior: reducedMotion.matches ? "auto" : "smooth", block: "nearest", inline: "nearest" });
-      });
+    $("menuSearch").addEventListener("input", event => {
+      searchValue = event.target.value;
+      $("clearSearch").hidden = !searchValue;
+      renderProducts();
+    });
 
-      $("menuSearch").addEventListener("input", event => {
-        searchValue = event.target.value;
-        $("clearSearch").hidden = !searchValue;
-        renderProducts();
-      });
+    $("clearSearch").addEventListener("click", () => {
+      $("menuSearch").value = "";
+      searchValue = "";
+      $("clearSearch").hidden = true;
+      renderProducts();
+      $("menuSearch").focus();
+    });
 
-      $("clearSearch").addEventListener("click", () => {
-        $("menuSearch").value = "";
-        searchValue = "";
-        $("clearSearch").hidden = true;
-        renderProducts();
-        $("menuSearch").focus();
-      });
+    $("resetFilters").addEventListener("click", () => {
+      activeCategory = "all";
+      searchValue = "";
+      $("menuSearch").value = "";
+      $("clearSearch").hidden = true;
+      renderCategories();
+      renderProducts();
+      $("menuSearch").focus({ preventScroll: true });
+    });
 
-      $("resetFilters").addEventListener("click", () => {
-        activeCategory = "all";
-        searchValue = "";
-        $("menuSearch").value = "";
-        $("clearSearch").hidden = true;
-        renderCategories();
-        renderProducts();
-        $("menuSearch").focus({ preventScroll: true });
-      });
-
-      function renderCart() {
-        const items = cartItems();
-        const totals = cartTotals();
-        $("cartFooter").hidden = items.length === 0;
-        $("checkoutButton").disabled = items.length === 0;
-        $("cartSubtitle").textContent = items.length ? `عدد الأصناف المختلفة: ${items.length} · الكمية: ${totals.quantity}` : "كل اللي تشتهيه، بمكان واحد.";
-        $("cartTotal").innerHTML = moneyMarkup(totals.amount);
-
-        if (!items.length) {
-          $("cartContent").innerHTML = `<div class="cart-empty">
-            <span class="empty-cart-icon">${icon("bag")}</span>
-            <h3>سلتك بعده فارغة</h3>
-            <p>اختار شي على ذوقك من المنيو.</p>
-            <button type="button" class="button button-gold" data-action="browse-menu">شوف المنيو ${icon("left")}</button>
-          </div>`;
-          return;
-        }
-
-        $("cartContent").innerHTML = items.map(({ product, quantity, subtotal }) =>
-          `<article class="cart-item">
-            <div class="cart-thumb">${productImage(product, 57)}</div>
-            <div>
-              <div class="cart-item-top">
-                <h3 class="cart-item-name">${escapeHTML(product.name)}</h3>
-                <button type="button" class="remove-item" data-action="remove" data-id="${product.id}" aria-label="حذف ${escapeHTML(product.name)} من السلة">${icon("trash")}</button>
-              </div>
-              <p class="cart-unit">سعر الوحدة: <bdi>${moneyText(product.price)}</bdi></p>
-              <div class="cart-item-bottom">
-                ${quantityControl(product.id, quantity, "cart")}
-                <span class="money cart-item-total">${moneyMarkup(subtotal)}</span>
-              </div>
-            </div>
-          </article>`
-        ).join("");
-      }
-
-      $("cartContent").addEventListener("click", event => {
-        const button = event.target.closest("button[data-action]");
-        if (!button) return;
-        const { action, id } = button.dataset;
-        if (action === "browse-menu") {
-          $("cartDialog").close();
-          $("menu").scrollIntoView({ behavior: reducedMotion.matches ? "auto" : "smooth" });
-          $("menuSearch").focus({ preventScroll: true });
-          return;
-        }
-        if (action === "remove") {
-          delete cart[id];
-          updateCart(true);
-        } else if (action === "cart-plus") {
-          changeCart(id, 1);
-        } else if (action === "cart-minus") {
-          changeCart(id, -1);
-        }
-        const replacement = $("cartContent").querySelector(`[data-action="${action}"][data-id="${id}"]:not(:disabled)`);
-        (replacement || $("cartContent").querySelector("button") || $("cartTitle")).focus({ preventScroll: true });
-      });
-
-      function openDialog(dialog, initialFocus) {
-        if (!dialog.open) dialog.showModal();
-        document.body.classList.add("modal-open");
-        if (initialFocus) initialFocus.focus({ preventScroll: true });
-      }
-
-      document.querySelectorAll("dialog").forEach(dialog => {
-        dialog.addEventListener("close", () => {
-          if (!document.querySelector("dialog[open]")) document.body.classList.remove("modal-open");
-        });
-        dialog.addEventListener("click", event => {
-          if (event.target !== dialog) return;
-          const bounds = dialog.getBoundingClientRect();
-          if (event.clientX < bounds.left || event.clientX > bounds.right ||
-              event.clientY < bounds.top || event.clientY > bounds.bottom) dialog.close();
-        });
-      });
-
-      document.querySelectorAll("[data-close]").forEach(button => {
-        button.addEventListener("click", () => $(button.dataset.close).close());
-      });
-
-      const openCart = () => openDialog($("cartDialog"), $("cartTitle"));
-      $("openCart").addEventListener("click", openCart);
-      $("mobileCart").addEventListener("click", openCart);
-
-      function renderCheckoutSummary() {
-        const items = cartItems();
-        $("checkoutItems").innerHTML = items.map(({ product, quantity, subtotal }) =>
-          `<div class="checkout-line">
-            <span><strong>${escapeHTML(product.name)}</strong><small>${quantity} × ${moneyText(product.price)}</small></span>
-            <span class="money">${moneyMarkup(subtotal)}</span>
-          </div>`
-        ).join("");
-        $("checkoutTotal").innerHTML = moneyMarkup(cartTotals().amount);
-        $("sendOrder").disabled = items.length === 0;
-      }
-
-      $("checkoutButton").addEventListener("click", () => {
-        if (!cartItems().length) return;
-        renderCheckoutSummary();
+    $("cartContent").addEventListener("click", event => {
+      const button = event.target.closest("button[data-action]");
+      if (!button) return;
+      const { action, id } = button.dataset;
+      if (action === "browse-menu") {
         $("cartDialog").close();
-        $("orderStatus").hidden = true;
-        openDialog($("checkoutDialog"), $("checkoutTitle"));
-      });
+        $("menu").scrollIntoView({ behavior: reducedMotion.matches ? "auto" : "smooth" });
+        $("menuSearch").focus({ preventScroll: true });
+        return;
+      }
+      if (action === "remove") {
+        delete cart[id];
+        updateCart(true);
+      } else if (action === "cart-plus") {
+        changeCart(id, 1);
+      } else if (action === "cart-minus") {
+        changeCart(id, -1);
+      }
+      const replacement = $("cartContent").querySelector(`[data-action="${action}"][data-id="${id}"]:not(:disabled)`);
+      (replacement || $("cartContent").querySelector("button") || $("cartTitle")).focus({ preventScroll: true });
+    });
 
-      $("editOrder").addEventListener("click", () => {
+    function openDialog(dialog, initialFocus) {
+      if (!dialog.open) dialog.showModal();
+      document.body.classList.add("modal-open");
+      if (initialFocus) initialFocus.focus({ preventScroll: true });
+    }
+
+    document.querySelectorAll("dialog").forEach(dialog => {
+      dialog.addEventListener("close", () => {
+        if (!document.querySelector("dialog[open]")) document.body.classList.remove("modal-open");
+      });
+      dialog.addEventListener("click", event => {
+        if (event.target !== dialog) return;
+        const bounds = dialog.getBoundingClientRect();
+        if (event.clientX < bounds.left || event.clientX > bounds.right ||
+            event.clientY < bounds.top || event.clientY > bounds.bottom) dialog.close();
+      });
+    });
+
+    document.querySelectorAll("[data-close]").forEach(button => {
+      button.addEventListener("click", () => $(button.dataset.close).close());
+    });
+
+    const openCart = () => openDialog($("cartDialog"), $("cartTitle"));
+    $("openCart").addEventListener("click", openCart);
+    $("mobileCart").addEventListener("click", openCart);
+
+    $("checkoutButton").addEventListener("click", () => {
+      if (!cartItems().length) return;
+      renderCheckoutSummary();
+      $("cartDialog").close();
+      $("orderStatus").hidden = true;
+      openDialog($("checkoutDialog"), $("checkoutTitle"));
+    });
+
+    $("editOrder").addEventListener("click", () => {
+      $("checkoutDialog").close();
+      openCart();
+    });
+
+    function normalizePhone(phone) {
+      return phone.replace(/[٠-٩]/g, digit => String("٠١٢٣٤٥٦٧٨٩".indexOf(digit)))
+        .replace(/[۰-۹]/g, digit => String("۰۱۲۳۴۵۶۷۸۹".indexOf(digit)))
+        .replace(/[\s()\-]/g, "");
+    }
+
+    function validatePhone() {
+      const input = $("customerPhone");
+      const value = normalizePhone(input.value.trim());
+      let error = "";
+      if (!value) error = "اكتب رقم هاتفك حتى يقدر المطعم يتواصل وياك.";
+      else if (!/^(?:07\d{9}|(?:\+?964|00964)7\d{9})$/.test(value)) {
+        error = "اكتب رقماً عراقياً صحيحاً يبدأ بـ 07 (11 رقماً)، أو بالصيغة +964.";
+      }
+      input.setAttribute("aria-invalid", String(Boolean(error)));
+      $("phoneError").textContent = error;
+      $("phoneError").hidden = !error;
+      return !error;
+    }
+
+    function validateAddress() {
+      const input = $("customerAddress");
+      const value = input.value.trim();
+      const error = value.length < 5 ? "اكتب المنطقة وأقرب نقطة دالة حتى يوصل المندوب بسهولة." : "";
+      input.setAttribute("aria-invalid", String(Boolean(error)));
+      $("addressError").textContent = error;
+      $("addressError").hidden = !error;
+      return !error;
+    }
+
+    $("customerPhone").addEventListener("input", () => {
+      if ($("customerPhone").getAttribute("aria-invalid") === "true") validatePhone();
+    });
+    $("customerAddress").addEventListener("input", () => {
+      if ($("customerAddress").getAttribute("aria-invalid") === "true") validateAddress();
+    });
+
+    $("checkoutForm").addEventListener("input", () => {
+      $("orderStatus").hidden = true;
+      lastOrderMessage = "";
+    });
+
+    function composeOrderMessage() {
+      const name = $("customerName").value.trim().replace(/\s+/g, " ");
+      const phone = normalizePhone($("customerPhone").value.trim());
+      const address = $("customerAddress").value.trim();
+      const notes = $("customerNotes").value.trim();
+
+      const lines = [`طلب جديد من موقع ${settings.brand}`, "────────────────"];
+      if (name) lines.push(`اسم الزبون: ${name}`);
+      lines.push(`رقم هاتف الزبون: ${phone}`);
+      lines.push(`أقرب نقطة دالة أو العنوان:\n${address}`);
+      lines.push("", "تفاصيل الطلب:");
+      cartItems().forEach(({ product, quantity, subtotal }, index) => {
+        lines.push(`${index + 1}. ${product.name}`);
+        lines.push(`الكمية: ${quantity} | سعر الوحدة: ${moneyText(product.price)}`);
+        lines.push(`المجموع: ${moneyText(subtotal)}`);
+      });
+      lines.push("", `إجمالي الطلب: ${moneyText(cartTotals().amount)}`);
+      lines.push("عملة الطلب: الدينار العراقي (IQD)");
+      if (notes) lines.push("", `ملاحظات إضافية:\n${notes}`);
+      lines.push("", "يرجى تأكيد الطلب وتفاصيل التوصيل.");
+      return lines.join("\n");
+    }
+
+    $("checkoutForm").addEventListener("submit", event => {
+      event.preventDefault();
+
+      if (!cartItems().length) {
         $("checkoutDialog").close();
         openCart();
-      });
-
-      function normalizePhone(phone) {
-        return phone.replace(/[٠-٩]/g, digit => String("٠١٢٣٤٥٦٧٨٩".indexOf(digit)))
-          .replace(/[۰-۹]/g, digit => String("۰۱۲۳۴۵۶۷۸۹".indexOf(digit)))
-          .replace(/[\s()\-]/g, "");
+        return;
       }
 
-      function validatePhone() {
-        const input = $("customerPhone");
-        const value = normalizePhone(input.value.trim());
-        let error = "";
-        if (!value) error = "اكتب رقم هاتفك حتى يقدر المطعم يتواصل وياك.";
-        else if (!/^(?:07\d{9}|(?:\+?964|00964)7\d{9})$/.test(value)) {
-          error = "اكتب رقماً عراقياً صحيحاً يبدأ بـ 07 (11 رقماً)، أو بالصيغة +964.";
+      const phoneValid = validatePhone();
+      const addressValid = validateAddress();
+      if (!phoneValid || !addressValid) {
+        (!phoneValid ? $("customerPhone") : $("customerAddress")).focus();
+        return;
+      }
+
+      lastOrderMessage = composeOrderMessage();
+      const whatsappUrl = `https://wa.me/${settings.phone}?text=${encodeURIComponent(lastOrderMessage)}`;
+
+      window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+      $("orderStatus").hidden = false;
+      $("orderStatus").scrollIntoView({ behavior: reducedMotion.matches ? "auto" : "smooth", block: "nearest" });
+    });
+
+    async function copyText(text) {
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(text);
+          return true;
         }
-        input.setAttribute("aria-invalid", String(Boolean(error)));
-        $("phoneError").textContent = error;
-        $("phoneError").hidden = !error;
-        return !error;
-      }
+      } catch {}
+      const previousFocus = document.activeElement;
+      const textarea = document.createElement("textarea");
+      textarea.value = text;
+      textarea.setAttribute("readonly", "");
+      textarea.style.cssText = "position:fixed;top:0;left:-9999px;opacity:0;font-size:16px";
+      (document.querySelector("dialog[open]") || document.body).appendChild(textarea);
+      textarea.select();
+      let copied = false;
+      try { copied = document.execCommand("copy"); } catch {}
+      textarea.remove();
+      previousFocus?.focus({ preventScroll: true });
+      return copied;
+    }
 
-      function validateAddress() {
-        const input = $("customerAddress");
-        const value = input.value.trim();
-        const error = value.length < 5 ? "اكتب المنطقة وأقرب نقطة دالة حتى يوصل المندوب بسهولة." : "";
-        input.setAttribute("aria-invalid", String(Boolean(error)));
-        $("addressError").textContent = error;
-        $("addressError").hidden = !error;
-        return !error;
-      }
+    $("copyOrder").addEventListener("click", async () => {
+      if (!lastOrderMessage) return;
+      const copied = await copyText(lastOrderMessage);
+      const label = $("copyOrder").querySelector("span");
+      label.textContent = copied ? "تم نسخ نص الطلب" : "تعذّر النسخ، جرّب فتح واتساب";
+      setTimeout(() => { label.textContent = "نسخ نص الطلب"; }, 3000);
+    });
 
-      $("customerPhone").addEventListener("input", () => {
-        if ($("customerPhone").getAttribute("aria-invalid") === "true") validatePhone();
-      });
-      $("customerAddress").addEventListener("input", () => {
-        if ($("customerAddress").getAttribute("aria-invalid") === "true") validateAddress();
-      });
-
-      $("checkoutForm").addEventListener("input", () => {
-        $("orderStatus").hidden = true;
-        lastOrderMessage = "";
-      });
-
-      function composeOrderMessage() {
-        const name = $("customerName").value.trim().replace(/\s+/g, " ");
-        const phone = normalizePhone($("customerPhone").value.trim());
-        const address = $("customerAddress").value.trim();
-        const notes = $("customerNotes").value.trim();
-
-        const lines = [`طلب جديد من موقع ${settings.brand}`, "────────────────"];
-        if (name) lines.push(`اسم الزبون: ${name}`);
-        lines.push(`رقم هاتف الزبون: ${phone}`);
-        lines.push(`أقرب نقطة دالة أو العنوان:\n${address}`);
-        lines.push("", "تفاصيل الطلب:");
-        cartItems().forEach(({ product, quantity, subtotal }, index) => {
-          lines.push(`${index + 1}. ${product.name}`);
-          lines.push(`الكمية: ${quantity} | سعر الوحدة: ${moneyText(product.price)}`);
-          lines.push(`المجموع: ${moneyText(subtotal)}`);
+    function renderSocial(targetId, account, label) {
+      const node = $(targetId);
+      if (!account) { node.innerHTML = ""; return; }
+      if (account.url && /^https:\/\//.test(account.url)) {
+        node.innerHTML = `<a class="social-account" href="${escapeHTML(account.url)}" target="_blank" rel="noopener noreferrer" aria-label="${label}: ${escapeHTML(account.handle)}"><bdi dir="ltr">${escapeHTML(account.handle)}</bdi></a>`;
+      } else {
+        node.innerHTML = `<button type="button" class="social-account" aria-label="نسخ اسم حساب ${label}: ${escapeHTML(account.handle)}" title="نسخ اسم الحساب"><bdi dir="ltr">${escapeHTML(account.handle)}</bdi>${icon("copy")}</button>`;
+        node.querySelector("button").addEventListener("click", async () => {
+          const copied = await copyText(account.handle);
+          showToast(copied ? `تم نسخ اسم حساب ${label}` : `اسم الحساب: ${account.handle}`);
         });
-        lines.push("", `إجمالي الطلب: ${moneyText(cartTotals().amount)}`);
-        lines.push("عملة الطلب: الدينار العراقي (IQD)");
-        if (notes) lines.push("", `ملاحظات إضافية:\n${notes}`);
-        lines.push("", "يرجى تأكيد الطلب وتفاصيل التوصيل.");
-        return lines.join("\n");
       }
+    }
 
-      $("checkoutForm").addEventListener("submit", event => {
-        event.preventDefault();
-
-        if (!cartItems().length) {
-          $("checkoutDialog").close();
-          openCart();
-          return;
-        }
-
-        const phoneValid = validatePhone();
-        const addressValid = validateAddress();
-        if (!phoneValid || !addressValid) {
-          (!phoneValid ? $("customerPhone") : $("customerAddress")).focus();
-          return;
-        }
-
-        lastOrderMessage = composeOrderMessage();
-        const whatsappUrl = `https://wa.me/${settings.phone}?text=${encodeURIComponent(lastOrderMessage)}`;
-
-        // This prepares a message only. Nothing is sent or confirmed automatically.
-        window.open(whatsappUrl, "_blank", "noopener,noreferrer");
-        $("orderStatus").hidden = false;
-        $("orderStatus").scrollIntoView({ behavior: reducedMotion.matches ? "auto" : "smooth", block: "nearest" });
-      });
-
-      async function copyText(text) {
-        try {
-          if (navigator.clipboard && window.isSecureContext) {
-            await navigator.clipboard.writeText(text);
-            return true;
-          }
-        } catch {
-          // Fall through to the local clipboard fallback.
-        }
-        const previousFocus = document.activeElement;
-        const textarea = document.createElement("textarea");
-        textarea.value = text;
-        textarea.setAttribute("readonly", "");
-        textarea.style.cssText = "position:fixed;top:0;left:-9999px;opacity:0;font-size:16px";
-        (document.querySelector("dialog[open]") || document.body).appendChild(textarea);
-        textarea.select();
-        let copied = false;
-        try { copied = document.execCommand("copy"); } catch {}
-        textarea.remove();
-        previousFocus?.focus({ preventScroll: true });
-        return copied;
-      }
-
-      $("copyOrder").addEventListener("click", async () => {
-        if (!lastOrderMessage) return;
-        const copied = await copyText(lastOrderMessage);
-        const label = $("copyOrder").querySelector("span");
-        label.textContent = copied ? "تم نسخ نص الطلب" : "تعذّر النسخ، جرّب فتح واتساب";
-        setTimeout(() => { label.textContent = "نسخ نص الطلب"; }, 3000);
-      });
-
-      function renderSocial(targetId, account, label) {
-        const node = $(targetId);
-        if (account.url && /^https:\/\//.test(account.url)) {
-          node.innerHTML = `<a class="social-account" href="${escapeHTML(account.url)}" target="_blank" rel="noopener noreferrer" aria-label="${label}: ${escapeHTML(account.handle)}"><bdi dir="ltr">${escapeHTML(account.handle)}</bdi></a>`;
+    async function loadDataFromFirebase() {
+      try {
+        const settingsDoc = await getDoc(doc(db, "settings", "config"));
+        if (settingsDoc.exists()) {
+          settings = settingsDoc.data();
         } else {
-          node.innerHTML = `<button type="button" class="social-account" aria-label="نسخ اسم حساب ${label}: ${escapeHTML(account.handle)}" title="نسخ اسم الحساب"><bdi dir="ltr">${escapeHTML(account.handle)}</bdi>${icon("copy")}</button>`;
-          node.querySelector("button").addEventListener("click", async () => {
-            const copied = await copyText(account.handle);
-            showToast(copied ? `تم نسخ اسم حساب ${label}` : `اسم الحساب: ${account.handle}`);
-          });
+          console.warn("لم يتم العثور على مستند 'config' في مجموعة 'settings'.");
+          settings = { brand: "4T CHICKEN", phone: "9647886891001", displayPhone: "+9647886891001", location: "الرمادي", sourceImage: "", sourceWidth: 1, sourceHeight: 1, instagram: {}, tiktok: {} };
         }
-      }
 
+        const categoriesSnapshot = await getDocs(collection(db, "categories"));
+        categories = categoriesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+        const productsSnapshot = await getDocs(collection(db, "products"));
+        products = productsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+        productMap = new Map(products.map(p => [p.id, p]));
+        categoryMap = new Map(categories.map(c => [c.id, c.name]));
+
+        loadCart();
+        initUI();
+
+      } catch (error) {
+        console.error("خطأ في جلب البيانات:", error);
+        $("productGrid").innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #ff7561;">حدث خطأ أثناء تحميل البيانات. يرجى المحاولة لاحقاً أو التواصل مع المطعم.</div>`;
+      }
+    }
+
+    function initUI() {
       document.querySelectorAll("[data-logo]").forEach(node => {
-        node.innerHTML = croppedImage(settings.logoCrop, "الشعار الأصلي لمطعم 4T CHICKEN", { eager: true });
+        node.innerHTML = croppedImage(settings.logoCrop, "الشعار", { eager: true });
       });
       document.querySelectorAll("[data-location]").forEach(node => { node.textContent = settings.location; });
       $("restaurantPhone").textContent = settings.displayPhone;
       $("restaurantPhone").href = `tel:+${settings.phone}`;
       $("footerWhatsapp").href = `https://wa.me/${settings.phone}`;
       $("currentYear").textContent = new Date().getFullYear();
-      renderSocial("instagramAccount", settings.instagram, "إنستغرام");
-      renderSocial("tiktokAccount", settings.tiktok, "تيك توك");
+      
+      if (settings.instagram) renderSocial("instagramAccount", settings.instagram, "إنستغرام");
+      if (settings.tiktok) renderSocial("tiktokAccount", settings.tiktok, "تيك توك");
 
       const featured = productMap.get("family-box");
-      $("heroPhoto").innerHTML = featured.image
-        ? productImage(featured, 250, true)
-        : croppedImage(featured.crop, "بوكس فور تي العائلي من صورة منيو المطعم", { eager: true });
-      $("featuredName").textContent = featured.name;
-      $("featuredPrice").innerHTML = moneyMarkup(featured.price);
-      $("heroAdd").addEventListener("click", () => addToCart(featured.id, 1));
+      if (featured) {
+        $("heroPhoto").innerHTML = featured.image
+          ? productImage(featured, 250, true)
+          : croppedImage(featured.crop, featured.name, { eager: true });
+        $("featuredName").textContent = featured.name;
+        $("featuredPrice").innerHTML = moneyMarkup(featured.price);
+        $("heroAdd").addEventListener("click", () => addToCart(featured.id, 1));
+      } else {
+        $("heroAdd").style.display = "none";
+      }
 
       document.querySelectorAll("[data-open-poster]").forEach(button => {
         button.addEventListener("click", () => {
           if (!$("posterContent").children.length) {
-            $("posterContent").innerHTML = croppedImage(settings.posterCrop, "صورة المنيو الأصلية لمطعم 4T CHICKEN", { eager: true });
+            $("posterContent").innerHTML = croppedImage(settings.posterCrop, "صورة المنيو", { eager: true });
           }
           openDialog($("posterDialog"));
         });
@@ -1762,38 +1451,40 @@ const { settings, categories, products } = data;
         link.addEventListener("click", () => setActiveNav(link.dataset.nav));
       });
 
-      function setActiveNav(id) {
-        document.querySelectorAll(".nav-link").forEach(link => {
-          const active = link.dataset.nav === id;
-          link.classList.toggle("active", active);
-          if (active) link.setAttribute("aria-current", "location");
-          else link.removeAttribute("aria-current");
-        });
-      }
-
       if ("IntersectionObserver" in window) {
         const observer = new IntersectionObserver(entries => {
           entries.forEach(entry => {
             if (entry.isIntersecting) setActiveNav(entry.target.id);
           });
         }, { rootMargin: "-90px 0px -55% 0px", threshold: 0 });
-        ["home", "menu", "contact"].forEach(id => observer.observe($(id)));
+        ["home", "menu", "contact"].forEach(id => { const el = $(id); if(el) observer.observe(el); });
       }
 
       window.addEventListener("storage", event => {
         if (event.key !== STORAGE_KEY && event.key !== null) return;
-        cart = loadCart();
+        loadCart();
         updateCart();
         if ($("checkoutDialog").open && !cartItems().length) {
           $("checkoutDialog").close();
           openCart();
         }
       });
-renderCategories();
+
+      renderCategories();
       renderProducts();
       updateCart();
-    })();
-  </script>
+    }
 
+    function setActiveNav(id) {
+      document.querySelectorAll(".nav-link").forEach(link => {
+        const active = link.dataset.nav === id;
+        link.classList.toggle("active", active);
+        if (active) link.setAttribute("aria-current", "location");
+        else link.removeAttribute("aria-current");
+      });
+    }
+
+    loadDataFromFirebase();
+  </script>
 </body>
 </html>
