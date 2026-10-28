@@ -126,7 +126,7 @@
 
     /* The companion has its own space inside the hero, not over the menu. */
     .mascot-nook { position: absolute; z-index: 5; left: -12px; bottom: -4px; width: 86px; height: 112px; }
-    .mascot-talk { position: relative; width: 86px; height: 110px; padding: 0; border: 0; background: transparent; }
+    .mascot-talk { position: relative; width: 86px; height: 86px; padding: 0; border: 0; background: transparent; }
     .mascot-talk > svg { width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 4px 7px #0004); }
     .mascot-close { position: absolute; left: -7px; bottom: -4px; width: 30px; height: 30px; border: 1px solid #454638; border-radius: 50%; background: #1a1c15; color: #b9bcaa; display: flex; align-items: center; justify-content: center; z-index: 2; }
     .mascot-close .icon { width: 13px; height: 13px; }
@@ -137,7 +137,7 @@
     .mascot-restore { position: absolute; left: 0; bottom: 14px; font-size: 11px; color: var(--muted); background: transparent; border: 0; padding: 10px 0; text-decoration: underline; text-underline-offset: 4px; }
     @keyframes blink { 0%, 43%, 47%, 100% { transform: scaleY(1); } 45% { transform: scaleY(.08); } }
     @keyframes head-tilt { 0%, 65%, 100% { transform: rotate(0); } 72%, 82% { transform: rotate(-5deg); } }
-    @keyframes wave { 0%, 74%, 92%, 100% { transform: rotate(0); } 78%, 86% { transform: rotate(-18deg); } 82%, 90% { transform: rotate(5deg); } }
+    @keyframes wave { 0%, 74%, 92%, 100% { transform: rotate(0); } 74%, 86% { transform: rotate(-18deg); } 82%, 90% { transform: rotate(5deg); } }
 
     /* Menu */
     .menu-section { padding-block: 43px 65px; scroll-margin-top: 90px; }
@@ -1015,6 +1015,7 @@
         .replace(/ة/g, "ه");
     }
 
+    // هنا يتم بناء أزرار الأقسام (الكل، الريزو، إلخ) تلقائياً من قاعدة البيانات
     function renderCategories() {
       const allCategories = [{ id: "all", name: "الكل" }, ...categories];
       $("categoryList").innerHTML = allCategories.map(category =>
@@ -1035,8 +1036,10 @@
       </div>`;
     }
 
+    // هنا يتم تصفية وعرض المنتجات بناءً على القسم المختار
     function renderProducts() {
       const query = normalizeSearch(searchValue);
+      // الفلترة تتم هنا: إذا كان القسم "الكل" نعرض الكل، وإلا نعرض فقط منتجات القسم المختار
       const visible = products.filter(product =>
         (activeCategory === "all" || product.category === activeCategory) &&
         normalizeSearch(product.name).includes(query)
@@ -1139,6 +1142,7 @@
       if (action === "draft-plus") updateDraft(id, 1);
     });
 
+    // عند الضغط على زر القسم (الريزو، البركر، إلخ)
     $("categoryList").addEventListener("click", event => {
       const button = event.target.closest("[data-category]");
       if (!button) return;
@@ -1148,7 +1152,7 @@
         item.classList.toggle("active", active);
         item.setAttribute("aria-pressed", String(active));
       });
-      renderProducts();
+      renderProducts(); // تحديث المنتجات بناءً على القسم
       button.scrollIntoView({ behavior: reducedMotion.matches ? "auto" : "smooth", block: "nearest", inline: "nearest" });
     });
 
@@ -1410,17 +1414,15 @@
       if (settings.instagram) renderSocial("instagramAccount", settings.instagram, "إنستغرام");
       if (settings.tiktok) renderSocial("tiktokAccount", settings.tiktok, "تيك توك");
 
-      // 🟢 الكود الجديد الخاص بالبانر (صورة العرض)
+      // 🟢 البانر (صورة العرض)
       if (settings.promoImage && settings.promoImage.trim() !== "") {
-        // عرض صورة العرض
         $("heroPhoto").innerHTML = `
           <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; transform: rotate(-3deg);">
             <img src="${escapeHTML(settings.promoImage)}" alt="عرض خاص" style="width: 100%; max-width: 400px; object-fit: contain; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));" loading="eager">
           </div>
         `;
-        $("heroAdd").style.display = "none"; // إخفاء زر الطلب
+        $("heroAdd").style.display = "none";
       } else {
-        // التراجع للعرض الافتراضي (البوكس العائلي)
         let featured = productMap.get("family-box");
         if (!featured) {
             featured = products.find(p => p.category === "family");
@@ -1443,12 +1445,13 @@
           $("heroAdd").style.display = "none";
         }
       }
-      // --------------------------------------------------
 
+      // 🟢 إعداد زر المنيو الأصلي
       document.querySelectorAll("[data-open-poster]").forEach(button => {
         button.addEventListener("click", () => {
           if (!$("posterContent").children.length) {
-            $("posterContent").innerHTML = croppedImage(settings.posterCrop, "صورة المنيو", { eager: true });
+            // هنا نضع صورة المنيو الكبيرة التي تريدها
+            $("posterContent").innerHTML = `<img src="${settings.sourceImage}" alt="المنيو الأصلي" style="width:100%; border-radius:8px;">`;
           }
           openDialog($("posterDialog"));
         });
