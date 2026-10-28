@@ -30,7 +30,7 @@
     .box { background: #10150d; padding: 20px; border-radius: 10px; border: 1px solid #303925; margin-bottom: 25px; }
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
     @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } .product-item { flex-direction: column; align-items: flex-start; gap: 10px; } }
-    #msg, #promoMsg { text-align: center; font-weight: bold; margin-top: 15px; font-size: 15px; }
+    #msg, #promoMsg, #bulkMsg { text-align: center; font-weight: bold; margin-top: 15px; font-size: 15px; }
     
     /* تنسيق أزرار التصفية (الفلاتر) */
     .filter-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 15px; scrollbar-width: thin; }
@@ -62,10 +62,18 @@
       <button class="logout-btn" onclick="logout()">تسجيل خروج</button>
       <h1>لوحة تحكم 4T CHICKEN</h1>
       
+      <!-- 🟢 صندوق الرفع السريع (الزر السحري) -->
+      <div class="box" style="border-color: #ffc431; text-align: center;">
+        <h2>🚀 الرفع السريع (المنيو الكامل)</h2>
+        <p style="font-size: 13px; color: #a3a59a; margin-bottom: 15px;">اضغط هنا لإضافة جميع الوجبات الـ 24 الموجودة في صورة المنيو إلى قاعدة البيانات بضغطة زر واحدة.</p>
+        <button onclick="bulkUpload()" id="bulkUploadBtn" style="background: #4caf50; color: white;">🚀 رفع جميع الوجبات (24 وجبة)</button>
+        <p id="bulkMsg"></p>
+      </div>
+
       <!-- صندوق إدارة صورة العرض (البانر) -->
       <div class="box" style="border-color: #ffc431;">
         <h2>🖼️ إدارة صورة العرض (البانر الرئيسي)</h2>
-        <p style="font-size: 13px; color: #a3a59a; margin-bottom: 15px;">ضع رابط صورة لتظهر في منتصف الصفحة الرئيسية.</p>
+        <p style="font-size: 13px; color: #a3a59a; margin-bottom: 15px;">ضع رابط صورة لتظهر في منتصف الصفحة الرئيسية. (اتركها فارغة للعودة لبوكس العائلة).</p>
         <div class="form-group">
           <input type="url" id="promoImageUrl" placeholder="https://example.com/promo.png" dir="ltr">
         </div>
@@ -75,9 +83,8 @@
 
       <!-- صندوق إضافة / تعديل الوجبات -->
       <div class="box">
-        <h2 id="formTitle">🍔 إضافة وجبة جديدة</h2>
+        <h2 id="formTitle">🍔 إضافة وجبة جديدة (يدوياً)</h2>
         <form id="addForm">
-          <!-- حقل مخفي لتخزين ID الوجبة أثناء التعديل -->
           <input type="hidden" id="editProductId" value="">
           
           <div class="grid-2">
@@ -107,7 +114,7 @@
           </div>
 
           <div class="form-group">
-            <label>رابط الصورة (اختياري - اتركه فارغاً لاستخدام صورة المنيو)</label>
+            <label>رابط الصورة (اختياري)</label>
             <input type="url" id="prodImage" placeholder="https://example.com/image.jpg" dir="ltr">
           </div>
 
@@ -191,6 +198,69 @@
       }
     });
 
+    // ---------------- 🟢 دالة الرفع السريع (الوجبات الـ 24) ----------------
+    window.bulkUpload = async () => {
+      const btn = document.getElementById("bulkUploadBtn");
+      const msg = document.getElementById("bulkMsg");
+      
+      btn.disabled = true;
+      btn.innerText = "جاري رفع الوجبات... يرجى الانتظار";
+      msg.innerText = "";
+
+      // بيانات جميع الوجبات الـ 24 من الصورة
+      const initialMenu = [
+        { id: "shawarma-sandwich", name: "شاورما دجاج ساندويش", price: 2500, category: "sandwiches", crop: [21, 398, 116, 86] },
+        { id: "fajita-sandwich", name: "فاهيتا دجاج ساندويش", price: 4000, category: "sandwiches", crop: [142, 397, 114, 87] },
+        { id: "zinger-sandwich", name: "زنكر ساندويش", price: 4000, category: "sandwiches", crop: [265, 397, 106, 88] },
+        { id: "saj-roll", name: "لفة صاج", price: 2000, category: "saj", crop: [389, 399, 104, 87] },
+        { id: "saj-meal", name: "وجبة صاج", price: 5000, category: "saj", crop: [494, 401, 100, 84] },
+        { id: "saj-tortilla", name: "تورتيلا صاج", price: 4000, category: "saj", crop: [597, 401, 97, 84] },
+        { id: "chicken-burger", name: "بركر دجاج كلاسيك", price: 4000, category: "burgers", crop: [23, 580, 111, 96] },
+        { id: "beef-burger", name: "بركر لحم كلاسيك", price: 5000, category: "burgers", crop: [141, 580, 102, 96] },
+        { id: "double-burger", name: "بركر فور تي دبل", price: 7000, category: "burgers", crop: [256, 580, 99, 96] },
+        { id: "rizo", name: "ريزو", price: 5000, category: "risotto", crop: [372, 590, 79, 83] },
+        { id: "rizo-shawarma", name: "ريزو شاورما", price: 5500, category: "risotto", crop: [456, 593, 78, 80] },
+        { id: "rizo-spicy", name: "ريزو سبايسي", price: 5500, category: "risotto", crop: [536, 590, 79, 83] },
+        { id: "rizo-smoked", name: "ريزو مدخن", price: 5500, category: "risotto", crop: [618, 592, 75, 81] },
+        { id: "chicken-3", name: "وجبة كنتاكي 3 قطع", price: 8000, category: "chicken", crop: [30, 778, 95, 89] },
+        { id: "chicken-5", name: "وجبة كنتاكي 5 قطع", price: 12000, category: "chicken", crop: [146, 777, 99, 91] },
+        { id: "chicken-7", name: "وجبة كنتاكي 7 قطع", price: 15000, category: "chicken", crop: [263, 776, 102, 94] },
+        { id: "family-box", name: "بوكس فور تي العائلي", price: 25000, category: "family", crop: [395, 781, 219, 123] },
+        { id: "finger", name: "فدق فنكر", price: 1000, category: "snacks", crop: [35, 978, 69, 84] },
+        { id: "finger-small", name: "ماعون فنكر صغير", price: 2000, category: "snacks", crop: [136, 982, 69, 80] },
+        { id: "finger-cheese", name: "ماعون فنكر بالجبنة", price: 3000, category: "snacks", crop: [229, 976, 76, 87] },
+        { id: "finger-meat", name: "ماعون فنكر باللحم", price: 5000, category: "snacks", crop: [327, 970, 83, 93] },
+        { id: "pepsi", name: "بيبسي", price: 500, category: "drinks", crop: [452, 976, 59, 86] },
+        { id: "diet-pepsi", name: "بيبسي دايت", price: 500, category: "drinks", crop: [534, 976, 61, 86] },
+        { id: "seven-up", name: "سفن", price: 500, category: "drinks", crop: [618, 978, 59, 84] }
+      ];
+
+      try {
+        // نستخدم setDoc لضمان عدم تكرار المنتجات إذا ضغطت الزر مرتين
+        for (const item of initialMenu) {
+          await setDoc(doc(db, "products", item.id), {
+            name: item.name,
+            price: item.price,
+            category: item.category,
+            crop: item.crop,
+            createdAt: serverTimestamp()
+          });
+        }
+        
+        msg.style.color = "#4caf50";
+        msg.innerText = "✅ تم رفع جميع الوجبات بنجاح! يمكنك الآن رؤيتها في الموقع.";
+        loadProducts(); // تحديث القائمة في لوحة التحكم
+      } catch (error) {
+        console.error(error);
+        msg.style.color = "#ee4636";
+        msg.innerText = "❌ حدث خطأ أثناء الرفع: " + error.message;
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "🚀 رفع جميع الوجبات (24 وجبة)";
+      }
+    };
+    // ------------------------------------------------------------------
+
     // ---------------- صورة العرض ----------------
     window.updatePromoImage = async () => {
       const url = document.getElementById("promoImageUrl").value.trim();
@@ -223,17 +293,14 @@
       msg.innerText = "";
 
       const productData = { name, price, category, createdAt: serverTimestamp() };
-      // نضيف الصورة فقط إذا تم إدخال رابط
       if (imageUrl) productData.image = imageUrl;
 
       try {
         if (id) {
-          // إذا كان هناك ID، فهذا يعني أننا نعدل منتجاً موجوداً
           await updateDoc(doc(db, "products", id), productData);
           msg.style.color = "#4caf50";
           msg.innerText = "✅ تم تعديل الوجبة بنجاح!";
         } else {
-          // إضافة منتج جديد
           await addDoc(collection(db, "products"), productData);
           msg.style.color = "#4caf50";
           msg.innerText = "✅ تمت إضافة الوجبة بنجاح!";
@@ -265,18 +332,15 @@
       document.getElementById("submitBtn").innerText = "حفظ التعديلات";
       document.getElementById("cancelEditBtn").style.display = "block";
       
-      // التمرير لأعلى الصفحة لرؤية النموذج
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    window.cancelEdit = () => {
-      resetForm();
-    };
+    window.cancelEdit = () => { resetForm(); };
 
     function resetForm() {
       document.getElementById("addForm").reset();
       document.getElementById("editProductId").value = "";
-      document.getElementById("formTitle").innerText = "🍔 إضافة وجبة جديدة";
+      document.getElementById("formTitle").innerText = "🍔 إضافة وجبة جديدة (يدوياً)";
       document.getElementById("submitBtn").innerText = "إضافة الوجبة للموقع";
       document.getElementById("cancelEditBtn").style.display = "none";
     }
@@ -284,7 +348,6 @@
     // ---------------- التصفية (الفلاتر) ----------------
     window.setFilter = (filter) => {
       currentFilter = filter;
-      // تحديث شكل الأزرار
       document.querySelectorAll(".filter-btn").forEach(btn => {
         btn.classList.toggle("active", btn.dataset.filter === filter);
       });
@@ -298,7 +361,6 @@
       try {
         const querySnapshot = await getDocs(collection(db, "products"));
         allProducts = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        // ترتيب الوجبات حسب الإضافة (الأحدث أولاً)
         allProducts.sort((a, b) => (b.createdAt?.toMillis() || 0) - (a.createdAt?.toMillis() || 0));
         renderProductsList();
       } catch (error) {
