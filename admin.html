@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة تحكم 4T CHICKEN</title>
+  <style>
+    body { font-family: "Tajawal", sans-serif; background: #10110f; color: #f7f5ee; padding: 20px; }
+    .container { max-width: 600px; margin: auto; background: #191b17; padding: 20px; border-radius: 10px; border: 1px solid #30332a; }
+    h1, h2 { text-align: center; color: #ffc431; }
+    input, select, button { width: 100%; padding: 10px; margin: 8px 0; border-radius: 6px; border: 1px solid #30332a; background: #22241e; color: white; font-family: inherit; }
+    button { background: #ffc431; color: #10110f; font-weight: bold; cursor: pointer; border: none; margin-top: 15px;}
+    button:hover { background: #ffd263; }
+    .hidden { display: none; }
+    .product-item { display: flex; justify-content: space-between; align-items: center; background: #22241e; padding: 10px; margin-bottom: 8px; border-radius: 6px; }
+    .delete-btn { background: #ee4636; color: white; width: auto; padding: 5px 10px; margin: 0; }
+    .logout-btn { background: transparent; border: 1px solid #ee4636; color: #ee4636; width: auto; margin-bottom: 20px;}
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- شاشة تسجيل الدخول -->
+    <div id="loginSection">
+      <h1>تسجيل دخول الأدمن</h1>
+      <input type="email" id="email" placeholder="البريد الإلكتروني">
+      <input type="password" id="password" placeholder="كلمة المرور">
+      <button onclick="login()">دخول</button>
+      <p id="loginError" style="color: #ee4636; text-align: center;"></p>
+    </div>
+
+    <!-- شاشة لوحة التحكم -->
+    <div id="adminSection" class="hidden">
+      <button class="logout-btn" onclick="logout()">تسجيل خروج</button>
+      <h1>إضافة منتج جديد</h1>
+      
+      <input type="text" id="prodName" placeholder="اسم الوجبة (مثال: برجر دجاج)">
+      <input type="number" id="prodPrice" placeholder="السعر (مثال: 5000)">
+      <input type="text" id="prodCategory" placeholder="معرف التصنيف (مثال: burgers)">
+      <input type="text" id="prodImage" placeholder="رابط الصورة (URL) - اختياري">
+      
+      <button onclick="addProduct()">إضافة المنتج للموقع</button>
+      <p id="msg" style="color: #4caf50; text-align: center; font-weight: bold;"></p>
+
+      <h2 style="margin-top: 30px;">المنتجات الحالية</h2>
+      <div id="productsList"></div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // 🔴 ضع إعدادات Firebase الخاصة بك هنا (نفس الإعدادات التي في index.html)
+    const firebaseConfig = {
+      apiKey: "AIzaSyBfY81QxRJak4X2h7PWjCkFPK9-9g7btDI",
+      authDomain: "t-chicken.firebaseapp.com",
+      projectId: "t-chicken",
+      storageBucket: "t-chicken.firebasestorage.app",
+      messagingSenderId: "354053502502",
+      appId: "1:354053502502:web:bce801d4ba6a2ae46a58e7"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    window.login = async () => {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        document.getElementById("loginError").innerText = "";
+      } catch (error) {
+        document.getElementById("loginError").innerText = "خطأ في البريد أو كلمة المرور";
+      }
+    };
+
+    window.logout = () => { signOut(auth); };
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        document.getElementById("loginSection").classList.add("hidden");
+        document.getElementById("adminSection").classList.remove("hidden");
+        loadProducts();
+      } else {
+        document.getElementById("loginSection").classList.remove("hidden");
+        document.getElementById("adminSection").classList.add("hidden");
+      }
+    });
+
+    window.addProduct = async () => {
+      const name = document.getElementById("prodName").value;
+      const price = parseInt(document.getElementById("prodPrice").value);
+      const category = document.getElementById("prodCategory").value;
+      const image = document.getElementById("prodImage").value;
+
+      if (!name || !price || !category) {
+        alert("يرجى ملء الاسم والسعر والتصنيف");
+        return;
+      }
+
+      try {
+        const productData = { name, price, category, createdAt: serverTimestamp() };
+        if (image) productData.image = image;
+
+        await addDoc(collection(db, "products"), productData);
+        
+        document.getElementById("msg").innerText = "تمت إضافة المنتج بنجاح!";
+        document.getElementById("prodName").value = "";
+        document.getElementById("prodPrice").value = "";
+        document.getElementById("prodImage").value = "";
+        
+        loadProducts();
+        setTimeout(() => document.getElementById("msg").innerText = "", 3000);
+      } catch (error) { alert("حدث خطأ: " + error.message); }
+    };
+
+    async function loadProducts() {
+      const list = document.getElementById("productsList");
+      list.innerHTML = "جاري التحميل...";
+      try {
+        const querySnapshot = await getDocs(collection(db, "products"));
+        list.innerHTML = "";
+        if(querySnapshot.empty) { list.innerHTML = "<p style='text-align:center;'>لا توجد منتجات بعد.</p>"; return; }
+        
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          list.innerHTML += `
+            <div class="product-item">
+              <div><strong>${data.name}</strong> - ${data.price} د.ع <br><small>التصنيف: ${data.category}</small></div>
+              <button class="delete-btn" onclick="deleteProduct('${doc.id}')">حذف</button>
+            </div>`;
+        });
+      } catch (error) { list.innerHTML = "حدث خطأ في جلب المنتجات."; }
+    }
+
+    window.deleteProduct = async (id) => {
+      if(confirm("هل أنت متأكد من حذف هذا المنتج؟")) {
+        try { await deleteDoc(doc(db, "products", id)); loadProducts(); } 
+        catch (error) { alert("خطأ في الحذف: " + error.message); }
+      }
+    };
+  </script>
+</body>
+</html>
