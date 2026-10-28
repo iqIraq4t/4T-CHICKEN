@@ -17,16 +17,26 @@
     button:disabled { background: #555; color: #888; cursor: not-allowed; }
     .btn-danger { background: #ee4636; color: white; width: auto; padding: 6px 15px; margin: 0; font-size: 14px;}
     .btn-danger:hover { background: #ff7561; }
+    .btn-edit { background: #007bff; color: white; width: auto; padding: 6px 15px; margin: 0 5px 0 0; font-size: 14px; }
+    .btn-edit:hover { background: #0056b3; }
+    .btn-cancel { background: #6c757d; color: white; display: none; margin-top: 10px; }
     .hidden { display: none; }
     .product-item { display: flex; justify-content: space-between; align-items: center; background: #22241e; padding: 12px; margin-bottom: 10px; border-radius: 8px; border-right: 4px solid #ffc431; }
     .product-info h4 { margin: 0 0 5px 0; font-size: 16px; }
     .product-info p { margin: 0; font-size: 13px; color: #a3a59a; }
+    .product-actions { display: flex; gap: 5px; }
     .logout-btn { background: transparent; border: 1px solid #ee4636; color: #ee4636; width: auto; margin-bottom: 20px; padding: 8px 20px; }
     .logout-btn:hover { background: #ee4636; color: white; }
     .box { background: #10150d; padding: 20px; border-radius: 10px; border: 1px solid #303925; margin-bottom: 25px; }
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-    @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
+    @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } .product-item { flex-direction: column; align-items: flex-start; gap: 10px; } }
     #msg, #promoMsg { text-align: center; font-weight: bold; margin-top: 15px; font-size: 15px; }
+    
+    /* تنسيق أزرار التصفية (الفلاتر) */
+    .filter-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 15px; scrollbar-width: thin; }
+    .filter-btn { width: auto; padding: 8px 15px; margin: 0; background: #22241e; color: #a3a59a; border: 1px solid #3b4431; border-radius: 20px; font-size: 14px; cursor: pointer; white-space: nowrap; }
+    .filter-btn:hover { background: #303925; color: white; }
+    .filter-btn.active { background: #ffc431; color: #10110f; border-color: #ffc431; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -55,22 +65,21 @@
       <!-- صندوق إدارة صورة العرض (البانر) -->
       <div class="box" style="border-color: #ffc431;">
         <h2>🖼️ إدارة صورة العرض (البانر الرئيسي)</h2>
-        <p style="font-size: 13px; color: #a3a59a; margin-bottom: 15px; line-height: 1.6;">
-          ضع رابط صورة (يفضل أن تكون بخلفية شفافة PNG أو سوداء) لتظهر في منتصف الصفحة الرئيسية بدلاً من "بوكس فورتي العائلي".<br>
-          <strong>ملاحظة:</strong> اترك الخانة فارغة واضغط تحديث للعودة إلى عرض البوكس العائلي.
-        </p>
+        <p style="font-size: 13px; color: #a3a59a; margin-bottom: 15px;">ضع رابط صورة لتظهر في منتصف الصفحة الرئيسية.</p>
         <div class="form-group">
-          <label>رابط صورة العرض</label>
-          <input type="url" id="promoImageUrl" placeholder="https://example.com/promo-image.png" dir="ltr">
+          <input type="url" id="promoImageUrl" placeholder="https://example.com/promo.png" dir="ltr">
         </div>
         <button type="button" onclick="updatePromoImage()">تحديث صورة العرض</button>
         <p id="promoMsg"></p>
       </div>
 
-      <!-- صندوق إضافة الوجبات -->
+      <!-- صندوق إضافة / تعديل الوجبات -->
       <div class="box">
-        <h2>🍔 إضافة وجبة جديدة</h2>
+        <h2 id="formTitle">🍔 إضافة وجبة جديدة</h2>
         <form id="addForm">
+          <!-- حقل مخفي لتخزين ID الوجبة أثناء التعديل -->
+          <input type="hidden" id="editProductId" value="">
+          
           <div class="grid-2">
             <div class="form-group">
               <label>اسم الوجبة</label>
@@ -85,7 +94,7 @@
           <div class="form-group">
             <label>اختر القسم (التصنيف)</label>
             <select id="prodCategory" required>
-              <option value="" disabled selected>-- اختر القسم من القائمة --</option>
+              <option value="" disabled selected>-- اختر القسم --</option>
               <option value="sandwiches">السندويشات</option>
               <option value="saj">الصاج</option>
               <option value="burgers">البركر</option>
@@ -97,14 +106,34 @@
             </select>
           </div>
 
+          <div class="form-group">
+            <label>رابط الصورة (اختياري - اتركه فارغاً لاستخدام صورة المنيو)</label>
+            <input type="url" id="prodImage" placeholder="https://example.com/image.jpg" dir="ltr">
+          </div>
+
           <button type="submit" id="submitBtn">إضافة الوجبة للموقع</button>
+          <button type="button" class="btn-cancel" id="cancelEditBtn" onclick="cancelEdit()">إلغاء التعديل</button>
         </form>
         <p id="msg"></p>
       </div>
 
       <!-- قائمة الوجبات الحالية -->
-      <h2 style="margin-top: 30px;">📋 قائمة الوجبات الحالية</h2>
-      <div id="productsList" style="max-height: 400px; overflow-y: auto;">
+      <h2 style="margin-top: 30px;">📋 إدارة الوجبات الحالية</h2>
+      
+      <!-- أزرار التصفية -->
+      <div class="filter-bar" id="filterBar">
+        <button class="filter-btn active" data-filter="all" onclick="setFilter('all')">الكل</button>
+        <button class="filter-btn" data-filter="sandwiches" onclick="setFilter('sandwiches')">السندويشات</button>
+        <button class="filter-btn" data-filter="saj" onclick="setFilter('saj')">الصاج</button>
+        <button class="filter-btn" data-filter="burgers" onclick="setFilter('burgers')">البركر</button>
+        <button class="filter-btn" data-filter="risotto" onclick="setFilter('risotto')">الريزو</button>
+        <button class="filter-btn" data-filter="chicken" onclick="setFilter('chicken')">الكنتاكي</button>
+        <button class="filter-btn" data-filter="family" onclick="setFilter('family')">العائلي</button>
+        <button class="filter-btn" data-filter="snacks" onclick="setFilter('snacks')">الوجبات الخفيفة</button>
+        <button class="filter-btn" data-filter="drinks" onclick="setFilter('drinks')">المشروبات</button>
+      </div>
+
+      <div id="productsList" style="max-height: 450px; overflow-y: auto;">
         <!-- سيتم عرض الوجبات هنا -->
       </div>
     </div>
@@ -113,7 +142,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, serverTimestamp, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, serverTimestamp, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     // 🔴 ضع إعدادات Firebase الخاصة بك هنا
     const firebaseConfig = {
@@ -128,6 +157,14 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
+
+    // متغيرات عامة
+    let allProducts = [];
+    let currentFilter = 'all';
+    const catNames = {
+      sandwiches: "السندويشات", saj: "الصاج", burgers: "البركر", risotto: "الريزو",
+      chicken: "وجبات الكنتاكي", family: "العائلي", snacks: "الوجبات الخفيفة", drinks: "المشروبات"
+    };
 
     // ---------------- دوال الدخول والخروج ----------------
     window.login = async () => {
@@ -154,18 +191,14 @@
       }
     });
 
-    // ---------------- تحديث صورة العرض (البانر) ----------------
+    // ---------------- صورة العرض ----------------
     window.updatePromoImage = async () => {
       const url = document.getElementById("promoImageUrl").value.trim();
       const msg = document.getElementById("promoMsg");
-      
       try {
-        // تحديث حقل promoImage في مستند الإعدادات
-        // نستخدم merge: true حتى لا نمسح بقية الإعدادات (مثل رقم الواتساب)
         await setDoc(doc(db, "settings", "config"), { promoImage: url }, { merge: true });
-        
         msg.style.color = "#4caf50";
-        msg.innerText = url ? "✅ تم تحديث صورة العرض بنجاح!" : "✅ تم إزالة صورة العرض، سيعود البوكس العائلي للظهور.";
+        msg.innerText = url ? "✅ تم تحديث صورة العرض بنجاح!" : "✅ تم إزالة صورة العرض.";
         document.getElementById("promoImageUrl").value = "";
       } catch (error) {
         msg.style.color = "#ee4636";
@@ -173,70 +206,136 @@
       }
     };
 
-    // ---------------- إضافة منتج ----------------
+    // ---------------- إضافة / تعديل منتج ----------------
     document.getElementById("addForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       const btn = document.getElementById("submitBtn");
       const msg = document.getElementById("msg");
       
+      const id = document.getElementById("editProductId").value;
       const name = document.getElementById("prodName").value;
       const price = parseInt(document.getElementById("prodPrice").value);
       const category = document.getElementById("prodCategory").value;
+      const imageUrl = document.getElementById("prodImage").value.trim();
 
       btn.disabled = true;
       btn.innerText = "جاري الحفظ...";
       msg.innerText = "";
 
+      const productData = { name, price, category, createdAt: serverTimestamp() };
+      // نضيف الصورة فقط إذا تم إدخال رابط
+      if (imageUrl) productData.image = imageUrl;
+
       try {
-        const productData = { name, price, category, createdAt: serverTimestamp() };
-        await addDoc(collection(db, "products"), productData);
+        if (id) {
+          // إذا كان هناك ID، فهذا يعني أننا نعدل منتجاً موجوداً
+          await updateDoc(doc(db, "products", id), productData);
+          msg.style.color = "#4caf50";
+          msg.innerText = "✅ تم تعديل الوجبة بنجاح!";
+        } else {
+          // إضافة منتج جديد
+          await addDoc(collection(db, "products"), productData);
+          msg.style.color = "#4caf50";
+          msg.innerText = "✅ تمت إضافة الوجبة بنجاح!";
+        }
         
-        msg.style.color = "#4caf50";
-        msg.innerText = "✅ تمت إضافة الوجبة بنجاح!";
-        
-        document.getElementById("addForm").reset();
+        resetForm();
         loadProducts();
       } catch (error) {
         msg.style.color = "#ee4636";
         msg.innerText = "❌ حدث خطأ: " + error.message;
       } finally {
         btn.disabled = false;
-        btn.innerText = "إضافة الوجبة للموقع";
+        btn.innerText = id ? "حفظ التعديلات" : "إضافة الوجبة للموقع";
       }
     });
 
-    // ---------------- عرض وحذف المنتجات ----------------
+    // ---------------- دوال التعديل والإلغاء ----------------
+    window.editProduct = (id) => {
+      const product = allProducts.find(p => p.id === id);
+      if (!product) return;
+
+      document.getElementById("editProductId").value = product.id;
+      document.getElementById("prodName").value = product.name;
+      document.getElementById("prodPrice").value = product.price;
+      document.getElementById("prodCategory").value = product.category;
+      document.getElementById("prodImage").value = product.image || "";
+      
+      document.getElementById("formTitle").innerText = "✏️ تعديل الوجبة";
+      document.getElementById("submitBtn").innerText = "حفظ التعديلات";
+      document.getElementById("cancelEditBtn").style.display = "block";
+      
+      // التمرير لأعلى الصفحة لرؤية النموذج
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    window.cancelEdit = () => {
+      resetForm();
+    };
+
+    function resetForm() {
+      document.getElementById("addForm").reset();
+      document.getElementById("editProductId").value = "";
+      document.getElementById("formTitle").innerText = "🍔 إضافة وجبة جديدة";
+      document.getElementById("submitBtn").innerText = "إضافة الوجبة للموقع";
+      document.getElementById("cancelEditBtn").style.display = "none";
+    }
+
+    // ---------------- التصفية (الفلاتر) ----------------
+    window.setFilter = (filter) => {
+      currentFilter = filter;
+      // تحديث شكل الأزرار
+      document.querySelectorAll(".filter-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.filter === filter);
+      });
+      renderProductsList();
+    };
+
+    // ---------------- جلب وعرض وحذف الوجبات ----------------
     async function loadProducts() {
       const list = document.getElementById("productsList");
       list.innerHTML = "جاري التحميل...";
       try {
         const querySnapshot = await getDocs(collection(db, "products"));
-        list.innerHTML = "";
-        if(querySnapshot.empty) { 
-          list.innerHTML = "<p style='text-align:center;'>لا توجد وجبات بعد.</p>"; 
-          return; 
-        }
-        
-        querySnapshot.forEach((doc) => {
-          const data = doc.data();
-          const item = document.createElement("div");
-          item.className = "product-item";
-          item.innerHTML = `
-            <div class="product-info">
-              <h4>${data.name}</h4>
-              <p>السعر: ${data.price} د.ع | القسم: ${data.category}</p>
-            </div>
-            <button class="btn-danger" onclick="deleteProduct('${doc.id}')">حذف</button>
-          `;
-          list.appendChild(item);
-        });
+        allProducts = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        // ترتيب الوجبات حسب الإضافة (الأحدث أولاً)
+        allProducts.sort((a, b) => (b.createdAt?.toMillis() || 0) - (a.createdAt?.toMillis() || 0));
+        renderProductsList();
       } catch (error) {
         list.innerHTML = "حدث خطأ في جلب البيانات.";
       }
     }
 
+    function renderProductsList() {
+      const list = document.getElementById("productsList");
+      let filtered = allProducts;
+      
+      if (currentFilter !== 'all') {
+        filtered = allProducts.filter(p => p.category === currentFilter);
+      }
+
+      if (filtered.length === 0) {
+        list.innerHTML = `<p style='text-align:center; color:#888;'>لا توجد وجبات في هذا القسم حالياً.</p>`;
+        return;
+      }
+
+      list.innerHTML = filtered.map(data => `
+        <div class="product-item">
+          <div class="product-info">
+            <h4>${data.name}</h4>
+            <p>السعر: ${data.price} د.ع | القسم: ${catNames[data.category] || data.category}</p>
+            ${data.image ? `<a href="${data.image}" target="_blank" style="color:#ffc431; font-size:12px;">عرض صورة الوجبة</a>` : `<small style="color:#666;">(صورة المنيو الأساسي)</small>`}
+          </div>
+          <div class="product-actions">
+            <button class="btn-edit" onclick="editProduct('${data.id}')">تعديل</button>
+            <button class="btn-danger" onclick="deleteProduct('${data.id}')">حذف</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
     window.deleteProduct = async (id) => {
-      if(confirm("هل أنت متأكد من حذف هذه الوجبة؟")) {
+      if(confirm("هل أنت متأكد من حذف هذه الوجبة نهائياً؟")) {
         try { 
           await deleteDoc(doc(db, "products", id)); 
           loadProducts(); 
